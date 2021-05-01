@@ -11,10 +11,10 @@ class WelcomeViewController: UIViewController {
 
     private let signInButton: UIButton = {
         let button = UIButton()
-        button.backgroundColor = .white
+        button.backgroundColor = UIColor.spotifyGreen
         button.setTitle("Sign In with Spotify", for: .normal)
-        button.setTitleColor(.black, for: .normal)
-        button.setTitleColor(.lightGray, for: .highlighted)
+        button.setTitleColor(.label, for: .normal)
+        button.setTitleColor(.gray, for: .highlighted)
         return button
     }()
     
@@ -28,9 +28,9 @@ class WelcomeViewController: UIViewController {
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        signInButton.frame = CGRect(x: 25,
-                                    y: view.height-50-view.safeAreaInsets.bottom,
-                                    width: view.width-50, height: 60)
+        signInButton.frame = CGRect(x: 30,
+                                    y: view.height-90-view.safeAreaInsets.bottom,
+                                    width: view.width-60, height: 60)
         signInButton.layer.cornerRadius = signInButton.height/2
     }
     

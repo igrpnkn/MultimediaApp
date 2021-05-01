@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3A78AF97263D7D1700C23D25 /* UIColor+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A78AF96263D7D1700C23D25 /* UIColor+Extension.swift */; };
 		8B3CABBD263BF9AC0090D9F6 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B3CABBC263BF9AC0090D9F6 /* AppDelegate.swift */; };
 		8B3CABBF263BF9AC0090D9F6 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B3CABBE263BF9AC0090D9F6 /* SceneDelegate.swift */; };
 		8B3CABC6263BF9AC0090D9F6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8B3CABC5263BF9AC0090D9F6 /* Assets.xcassets */; };
@@ -33,6 +34,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3A78AF96263D7D1700C23D25 /* UIColor+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extension.swift"; sourceTree = "<group>"; };
 		8B3CABB9263BF9AC0090D9F6 /* MultimediaApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MultimediaApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8B3CABBC263BF9AC0090D9F6 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		8B3CABBE263BF9AC0090D9F6 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -186,6 +188,7 @@
 			isa = PBXGroup;
 			children = (
 				8B3CAC16263C16940090D9F6 /* UIView+Extension.swift */,
+				3A78AF96263D7D1700C23D25 /* UIColor+Extension.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -262,6 +265,7 @@
 				8B3CABE0263BFDFA0090D9F6 /* SearchViewController.swift in Sources */,
 				8B3CAC09263C00630090D9F6 /* Playlist.swift in Sources */,
 				8B3CAC00263BFFFE0090D9F6 /* AuthManager.swift in Sources */,
+				3A78AF97263D7D1700C23D25 /* UIColor+Extension.swift in Sources */,
 				8B3CABFC263BFFD00090D9F6 /* SearchResultsViewController.swift in Sources */,
 				8B3CABEC263BFF1E0090D9F6 /* WelcomeViewController.swift in Sources */,
 				8B3CABF2263BFF600090D9F6 /* ProfileViewController.swift in Sources */,
@@ -419,6 +423,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = NZ34M8AX57;
 				INFOPLIST_FILE = MultimediaApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -437,6 +442,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = NZ34M8AX57;
 				INFOPLIST_FILE = MultimediaApp/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
