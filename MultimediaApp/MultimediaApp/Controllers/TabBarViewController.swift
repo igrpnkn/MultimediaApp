@@ -13,6 +13,9 @@ class TabBarViewController: UITabBarController {
         super.viewDidLoad()
         title = "Tab Bar Controller"
         view.backgroundColor = .brown
+        tabBar.tintColor = .spotifyGreen
+        tabBar.barTintColor = .secondarySystemBackground
+        tabBar.isOpaque = true
         setBarTree()
     }
     
