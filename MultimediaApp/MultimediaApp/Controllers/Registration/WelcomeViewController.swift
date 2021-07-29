@@ -20,6 +20,7 @@ class WelcomeViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        Logger.log(object: Self.self, method: #function)
         title = "Spotify"
         view.backgroundColor = .systemBackground
         view.addSubview(signInButton)
@@ -35,6 +36,7 @@ class WelcomeViewController: UIViewController {
     }
     
     @objc func didTapSignIn() {
+        Logger.log(object: Self.self, method: #function)
         let authViewController = AuthViewController()
         authViewController.navigationItem.largeTitleDisplayMode = .never
         authViewController.completionHandler = { [weak self] success in
@@ -50,8 +52,10 @@ class WelcomeViewController: UIViewController {
     }
 
     private func handleSignIn(success: Bool) {
+        Logger.log(object: Self.self, method: #function)
         // Log user in or yell at them for error
         guard success else {
+            Logger.log(object: Self.self, method: #function, message: "Was guarded.")
             let alert = UIAlertController(title: "Ooops!",
                                           message: "Something went wrong when signing in.",
                                           preferredStyle: .alert)

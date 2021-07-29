@@ -36,6 +36,10 @@ class TabBarViewController: UITabBarController {
         nav1.navigationBar.prefersLargeTitles = true
         nav2 .navigationBar.prefersLargeTitles = true
         
+        nav0.navigationBar.tintColor = .spotifyGreen
+        nav1.navigationBar.tintColor = .spotifyGreen
+        nav2.navigationBar.tintColor = .spotifyGreen
+        
         nav0.tabBarItem = UITabBarItem(title: "Browse", image: UIImage(systemName: "house.circle"), tag: 1)
         nav0.tabBarItem.selectedImage = UIImage(systemName: "house.circle.fill")
         nav1.tabBarItem = UITabBarItem(title: "Search", image: UIImage(systemName: "magnifyingglass.circle"), tag: 1)
