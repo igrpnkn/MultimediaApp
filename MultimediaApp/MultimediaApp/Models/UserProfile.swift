@@ -11,7 +11,7 @@ struct UserProfile: Codable {
     let country: String
     let display_name: String
     let email: String
-//    let explicit_content: UserExplicitContent?
+    let explicit_content: UserExplicitContent
     let external_urls: UserExternalURLS
     let followers: UserFollowers
     let href: String
@@ -34,8 +34,8 @@ struct UserFollowers: Codable {
 }
 
 struct UserExplicitContent: Codable {
-    let filter_enabled: Int?
-    let filter_locked: Int?
+    let filter_enabled: Bool
+    let filter_locked: Bool
 }
 
 struct UserExternalURLS: Codable {
