@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SDWebImage
 
 class ProfileViewController: UIViewController {
 
@@ -53,10 +54,11 @@ class ProfileViewController: UIViewController {
     private func updateUI(with model: UserProfile) {
         Logger.log(object: Self.self, method: #function)
         tableView.isHidden = false
-        models.append("Full Name: \(model.display_name)")
+        models.append("Name: \(model.display_name)")
         models.append("E-Mail: \(model.email)")
         models.append("User ID: \(model.id)")
         models.append("Spotify Plan: \(model.product)")
+        createTableHeader(with: model.images[0])
         tableView.reloadData()
     }
     
@@ -69,6 +71,41 @@ class ProfileViewController: UIViewController {
         view.addSubview(label)
         label.center = view.center
     }
+    
+    private func createTableHeader(with metaData: UserImage?) {
+        Logger.log(object: Self.self, method: #function)
+        guard metaData != nil,
+              let urlString = metaData?.url,
+              let url = URL(string: urlString)
+        else {
+            Logger.log(object: Self.self, method: #function, message: "Creation header was guarded: metadata is nil.")
+            return
+        }
+        let headerView = UIView(frame: CGRect(x: 0, y: 0, width: view.width, height: view.width))
+        headerView.backgroundColor = .systemBackground
+        
+        let imageSize = headerView.height*0.8
+        
+        let shadowView = UIView(frame: CGRect(x: 0, y: 0, width: imageSize, height: imageSize))
+        headerView.addSubview(shadowView)
+        shadowView.center = headerView.center
+        shadowView.layer.cornerRadius = shadowView.height*0.16
+        shadowView.backgroundColor = .systemBackground
+        shadowView.layer.shadowRadius = 10
+        shadowView.layer.shadowOpacity = 0.8
+        shadowView.layer.shadowOffset = CGSize(width: 0, height: 0)
+        shadowView.layer.shadowColor = UIColor.darkGray.cgColor
+        
+        let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: imageSize, height: imageSize))
+        headerView.addSubview(imageView)
+        imageView.center = headerView.center
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
+        imageView.layer.cornerRadius = imageView.height*0.16
+        imageView.sd_setImage(with: url, completed: nil)
+        
+        tableView.tableHeaderView = headerView
+    }
 }
  
 extension ProfileViewController: UITableViewDataSource {
@@ -78,10 +115,6 @@ extension ProfileViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return models.count
-    }
-    
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return "Information"
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

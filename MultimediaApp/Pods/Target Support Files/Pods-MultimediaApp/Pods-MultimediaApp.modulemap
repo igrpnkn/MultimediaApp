@@ -1,0 +1,6 @@
+framework module Pods_MultimediaApp {
+  umbrella header "Pods-MultimediaApp-umbrella.h"
+
+  export *
+  module * { export * }
+}
