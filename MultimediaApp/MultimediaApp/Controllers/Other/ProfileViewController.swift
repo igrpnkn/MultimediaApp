@@ -9,7 +9,16 @@ import UIKit
 import SDWebImage
 
 class ProfileViewController: UIViewController {
-
+    
+    private let activityIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(frame: .zero)
+        indicator.style = .large
+        indicator.color = .spotifyGreen
+        indicator.hidesWhenStopped = true
+        indicator.isHidden = false
+        return indicator
+    }()
+    
     private let tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .grouped)
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
@@ -24,6 +33,7 @@ class ProfileViewController: UIViewController {
         Logger.log(object: Self.self, method: #function)
         title = "Profile"
         view.backgroundColor = .systemBackground
+        view.addSubview(activityIndicator)
         view.addSubview(tableView)
         tableView.dataSource = self
         tableView.delegate = self
@@ -33,10 +43,12 @@ class ProfileViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         tableView.frame = view.bounds
+        activityIndicator.frame = CGRect(x: 0, y: 0, width: view.width, height: view.height)
     }
     
     private func fetchProfile() {
         Logger.log(object: Self.self, method: #function)
+        activityIndicator.startAnimating()
         APICaller.shared.getCurrentUserProfile { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
@@ -53,6 +65,7 @@ class ProfileViewController: UIViewController {
 
     private func updateUI(with model: UserProfile) {
         Logger.log(object: Self.self, method: #function)
+        activityIndicator.stopAnimating()
         tableView.isHidden = false
         models.append("Name: \(model.display_name)")
         models.append("E-Mail: \(model.email)")
@@ -64,6 +77,7 @@ class ProfileViewController: UIViewController {
     
     private func failedToGetProfile() {
         Logger.log(object: Self.self, method: #function)
+        activityIndicator.stopAnimating()
         let label = UILabel(frame: .zero)
         label.text = "Failed to get profile :("
         label.textColor = .secondaryLabel
@@ -82,7 +96,7 @@ class ProfileViewController: UIViewController {
             return
         }
         let headerView = UIView(frame: CGRect(x: 0, y: 0, width: view.width, height: view.width))
-        headerView.backgroundColor = .systemBackground
+        headerView.backgroundColor = .secondarySystemBackground
         
         let imageSize = headerView.height*0.8
         
