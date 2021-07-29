@@ -1,2 +1,2 @@
 # MultimediaApp
-Trying build project like an Spotify.
+In this way I am to build multimedia application using Spotify API.
