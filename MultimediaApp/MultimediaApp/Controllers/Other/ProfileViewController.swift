@@ -56,8 +56,8 @@ class ProfileViewController: UIViewController {
                     self?.updateUI(with: model)
                     break
                 case .failure(let error):
-                    self?.failedToGetProfile()
-                    print(error.localizedDescription)
+                    self?.failedToGetProfile(with: error)
+                    break
                 }
             }
         }
@@ -75,8 +75,8 @@ class ProfileViewController: UIViewController {
         tableView.reloadData()
     }
     
-    private func failedToGetProfile() {
-        Logger.log(object: Self.self, method: #function)
+    private func failedToGetProfile(with error: Error) {
+        Logger.log(object: Self.self, method: #function, message: error.localizedDescription)
         activityIndicator.stopAnimating()
         let label = UILabel(frame: .zero)
         label.text = "Failed to get profile :("

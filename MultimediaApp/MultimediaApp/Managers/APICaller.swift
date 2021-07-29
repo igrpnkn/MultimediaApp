@@ -36,11 +36,30 @@ final class APICaller {
                     return
                 }
                 do {
-                    let meta = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
-                    Logger.log(object: Self.self, method: #function, message: "Serialized JSON:", body: meta, clarification: nil)
                     let result = try JSONDecoder().decode(UserProfile.self, from: data)
                     Logger.log(object: Self.self, method: #function, message: "Got user profile model:", body: result, clarification: nil)
                     completion(.success(result))
+                } catch {
+                    completion(.failure(error))
+                }
+            }
+            task.resume()
+        }
+    }
+    
+    public func getNewReleases(completion: @escaping (Result<String, Error>) -> Void) {
+        createRequest(with: URL(string: Constants.baseAPIURL + "/browse/new-releases?limit=10&country=RU"), type: .GET) { request in
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                guard let data = data, error == nil else {
+                    completion(.failure(APIError.failedToGetDate))
+                    return
+                }
+                do {
+                    let meta = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
+                    Logger.log(object: Self.self, method: #function, message: "Serialized JSON:", body: meta, clarification: nil)
+//                    let result = try JSONDecoder().decode(UserProfile.self, from: data)
+//                    Logger.log(object: Self.self, method: #function, message: "Got user profile model:", body: result, clarification: nil)
+                    completion(.success(""))
                 } catch {
                     completion(.failure(error))
                 }
