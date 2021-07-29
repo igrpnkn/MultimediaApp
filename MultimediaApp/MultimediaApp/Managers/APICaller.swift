@@ -36,9 +36,11 @@ final class APICaller {
                     return
                 }
                 do {
-                    let result = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
-                    print("\nINFO: \(#function) : JSON for Profile info =\n\(result)\n: current user profile has been got successfully.")
-                    completion(.success(UserProfile()))
+                    let meta = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
+                    Logger.log(object: Self.self, method: #function, message: "Serialized JSON:", body: meta, clarification: nil)
+                    let result = try JSONDecoder().decode(UserProfile.self, from: data)
+                    Logger.log(object: Self.self, method: #function, message: "Got user profile model:", body: result, clarification: nil)
+                    completion(.success(result))
                 } catch {
                     completion(.failure(error))
                 }
