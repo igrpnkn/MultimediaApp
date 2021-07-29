@@ -11,18 +11,19 @@ class ProfileViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        Logger.log(object: Self.self, method: #function)
         title = "Profile"
         view.backgroundColor = .systemBackground
         APICaller.shared.getCurrentUserProfile { result in
             switch result {
             case .success(let model):
-                print("\nINFO: Model has beeb got! ")
                 break
             case .failure(let error):
                 print(error.localizedDescription)
             }
         }
     }
-
+    
+     
 
 }

@@ -12,7 +12,9 @@ class AuthViewController: UIViewController, WKNavigationDelegate {
 
     private let webView: WKWebView = {
         let preferences = WKWebpagePreferences()
-        preferences.allowsContentJavaScript = true
+        if #available(iOS 14.0, *) {
+            preferences.allowsContentJavaScript = true
+        }
         let configuration = WKWebViewConfiguration()
         configuration.defaultWebpagePreferences = preferences
         let webView = WKWebView(frame: .zero, configuration: configuration)
@@ -47,8 +49,7 @@ class AuthViewController: UIViewController, WKNavigationDelegate {
         })?.value else {
             return
         }
-        
-        print("INFO: Authorization code: \(code)")
+        Logger.log(object: Self.self, method: #function, message: "Code = \(code)")
         
         webView.isHidden = true
         AuthManager.shared.exchangeCodeForToken(code: code) { [weak self] success in

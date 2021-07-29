@@ -59,8 +59,10 @@ final class AuthManager {
         code: String,
         completionHandler: @escaping ((Bool) -> Void)
     ) {
+        Logger.log(object: Self.self, method: #function)
         // getting token
         guard let url = URL(string: Constants.tokenAPIURL) else {
+            Logger.log(object: Self.self, method: #function, message: "Was guarded.")
             return
         }
             
@@ -94,12 +96,15 @@ final class AuthManager {
             
             do {
                 let result = try JSONDecoder().decode(AuthResponse.self, from: data)
+                Logger.log(object: Self.self, method: #function, message: " JSON with tokens data got.", body: result, clarification: nil)
                 self?.cacheToken(result: result)
                 completionHandler(true)
             } catch {
+                Logger.log(object: Self.self, method: #function, message: "❌ An Error was thrown while getting tokens data.")
                 completionHandler(false)
             }
         }
+        Logger.log(object: Self.self, method: #function, message: "URL Session is started to get tokens.")
         task.resume()
     }
     
@@ -125,23 +130,23 @@ final class AuthManager {
     }
     
     public func refreshIfNeeded(completion: ((Bool) -> Void)? ) {
-        print("\nINFO: \(#function) : -")
+        Logger.log(object: Self.self, method: #function)
         guard !isTokenRefreshing else {
-            print("\nINFO: \(#function) : isTokenRefreshing = \(isTokenRefreshing) : refreshing guarded.")
+            Logger.log(object: Self.self, method: #function, message: "Token refreshing is guarded : is refreshing.")
             return
         }
         guard shouldRefreshToken else {
-            print("\nINFO: \(#function) : shouldRefreshToken = \(shouldRefreshToken) : refreshing guarded.")
+            Logger.log(object: Self.self, method: #function, message: "Token refreshing is guarded : no needs to refresh.")
             completion?(true)
             return
         }
         guard self.refreshToken != nil else {
-            print("\nINFO: \(#function) : refreshToken = nil : refreshing guarded.")
+            Logger.log(object: Self.self, method: #function, message: "Token refreshing is guarded : refresh token is Nil.")
             return
         }
         //Refresh the token
         guard let url = URL(string: Constants.tokenAPIURL) else {
-            print("\nINFO: \(#function) : broken Constants.tokenAPIURL : refreshing guarded.")
+            Logger.log(object: Self.self, method: #function, message: "Token refreshing is guarded : broken API url.")
             return
         }
             
@@ -168,8 +173,6 @@ final class AuthManager {
         request.setValue("Basic \(base64String)", forHTTPHeaderField: "Authorization")
         request.httpBody = component.query?.data(using: .utf8)
         
-        print("\nINFO: \(#function) : request for refreshing = \(request) : refreshing guarded.")
-        
         let task = URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
             self?.isTokenRefreshing = false
             guard let data = data, error == nil else {
@@ -181,7 +184,7 @@ final class AuthManager {
                 let result = try JSONDecoder().decode(AuthResponse.self, from: data)
                 self?.onRefreshBloks.forEach { $0(result.access_token) }
                 self?.onRefreshBloks.removeAll()
-                print("\nINFO: We have got a token: \(result.access_token)")
+                Logger.log(object: Self.self, method: #function, message: "Recieved access token:", body: result.access_token, clarification: nil)
                 self?.cacheToken(result: result)
                 completion?(true)
             } catch {
@@ -189,6 +192,7 @@ final class AuthManager {
             }
         }
         task.resume()
+        Logger.log(object: Self.self, method: #function, message: "URL Session is started to refresh tokens.")
     }
     
     private func cacheToken(result: AuthResponse) {
@@ -197,6 +201,7 @@ final class AuthManager {
             UserDefaults.standard.setValue(refreshToken, forKey: "refresh_token")
         }
         UserDefaults.standard.setValue(Date().addingTimeInterval(TimeInterval(result.expires_in)), forKey: "expirationDate")
+        Logger.log(object: Self.self, method: #function, message: "Tokens are cashed.")
     }
     
 }
