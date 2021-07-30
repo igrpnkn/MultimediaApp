@@ -55,6 +55,8 @@ class HomeViewController: UIViewController {
                 imageView.image = UIImage(systemName: "square.grid.3x3.topmiddle.fill")
             } else if let _ = with as? RecommendedGenresResponse {
                 imageView.image = UIImage(systemName: "square.grid.3x3.topright.fill")
+            } else if let _ = with as? String {
+                imageView.image = UIImage(systemName: "square.grid.3x3.middleleft.fill")
             } else {
                 return
             }
@@ -107,7 +109,7 @@ extension HomeViewController {
         }
     }
     
-    private func fetchAllFeaturedPlaylists() {
+     private func fetchAllFeaturedPlaylists() {
         Logger.log(object: Self.self, method: #function)
         APICaller.shared.getAllFeaturedPlaylists { [weak self] result in
             DispatchQueue.global(qos: .default).async {
@@ -129,12 +131,33 @@ extension HomeViewController {
             DispatchQueue.global(qos: .default).async {
                 switch result {
                 case .success(let model):
+                    let genres = model.genres
+                    var seeds = Set<String>()
+                    while seeds.count <= 4 {
+                        if let random = genres.randomElement() {
+                            seeds.insert(random)
+                        }
+                    }
+                    self?.fetchRecommendations(genres: seeds)
                     self?.updateUI(with: model)
                     break
                 case .failure(let error):
                     self?.failedToFetchData(with: error)
                     break
                 }
+            }
+        }
+    }
+    
+    private func fetchRecommendations(genres: Set<String>) {
+        APICaller.shared.getRecommendations(genres: genres) { [weak self] result in
+            switch result {
+            case .success(let model):
+                self?.updateUI(with: model)
+                break
+            case .failure(let error):
+                self?.failedToFetchData(with: error)
+                break
             }
         }
     }
