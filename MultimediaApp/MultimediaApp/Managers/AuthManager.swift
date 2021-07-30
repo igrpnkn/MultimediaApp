@@ -17,7 +17,7 @@ final class AuthManager {
         static let clientID = "9468cf3e204741bc9832511d92e4c09b"
         static let clientSecret = "19a82a070afa41febe80788421a1d89d"
         static let tokenAPIURL = "https://accounts.spotify.com/api/token"
-        static let redirectURI = "https://github.com/Igor-A-Penkin/MultimediaApp"
+        static let redirectURI = "https://developer.apple.com/"
         static let scopes = "ugc-image-upload%20user-read-recently-played%20user-top-read%20user-read-playback-position%20playlist-modify-public%20playlist-read-private%20playlist-modify-private%20user-follow-read%20user-library-read%20user-library-modify%20user-read-email%20user-read-private"
     }
     
