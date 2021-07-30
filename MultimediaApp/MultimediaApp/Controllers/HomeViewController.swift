@@ -55,7 +55,7 @@ class HomeViewController: UIViewController {
                 imageView.image = UIImage(systemName: "square.grid.3x3.topmiddle.fill")
             } else if let _ = with as? RecommendedGenresResponse {
                 imageView.image = UIImage(systemName: "square.grid.3x3.topright.fill")
-            } else if let _ = with as? String {
+            } else if let _ = with as? RecommendationsResponse {
                 imageView.image = UIImage(systemName: "square.grid.3x3.middleleft.fill")
             } else {
                 return
