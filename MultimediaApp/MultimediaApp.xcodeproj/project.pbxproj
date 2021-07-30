@@ -37,6 +37,8 @@
 		8B4029CD26B2A61D009066E8 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B4029CC26B2A61D009066E8 /* Logger.swift */; };
 		8B4029D226B2DDAC009066E8 /* SettingsModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B4029D126B2DDAC009066E8 /* SettingsModels.swift */; };
 		8B4029F326B3FAAF009066E8 /* APIImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B4029F226B3FAAF009066E8 /* APIImage.swift */; };
+		8B4029F626B42DA1009066E8 /* FeaturedPlaylistsResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B4029F526B42DA1009066E8 /* FeaturedPlaylistsResponse.swift */; };
+		8B4029F926B440EE009066E8 /* RecommendedGenresResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B4029F826B440EE009066E8 /* RecommendedGenresResponse.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -72,6 +74,8 @@
 		8B4029CC26B2A61D009066E8 /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 		8B4029D126B2DDAC009066E8 /* SettingsModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsModels.swift; sourceTree = "<group>"; };
 		8B4029F226B3FAAF009066E8 /* APIImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIImage.swift; sourceTree = "<group>"; };
+		8B4029F526B42DA1009066E8 /* FeaturedPlaylistsResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeaturedPlaylistsResponse.swift; sourceTree = "<group>"; };
+		8B4029F826B440EE009066E8 /* RecommendedGenresResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendedGenresResponse.swift; sourceTree = "<group>"; };
 		ABA1995835CDC14F5511639D /* Pods-MultimediaApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MultimediaApp.release.xcconfig"; path = "Target Support Files/Pods-MultimediaApp/Pods-MultimediaApp.release.xcconfig"; sourceTree = "<group>"; };
 		B77649A6DA5A2A6DB074FD38 /* Pods-MultimediaApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MultimediaApp.debug.xcconfig"; path = "Target Support Files/Pods-MultimediaApp/Pods-MultimediaApp.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -176,6 +180,8 @@
 				8B4029D126B2DDAC009066E8 /* SettingsModels.swift */,
 				3AB2C14F26B34F550026220B /* NewReleasesRespone.swift */,
 				8B4029F226B3FAAF009066E8 /* APIImage.swift */,
+				8B4029F526B42DA1009066E8 /* FeaturedPlaylistsResponse.swift */,
+				8B4029F826B440EE009066E8 /* RecommendedGenresResponse.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -355,6 +361,7 @@
 				8B4029CD26B2A61D009066E8 /* Logger.swift in Sources */,
 				8B3CABDD263BFD8F0090D9F6 /* HomeViewController.swift in Sources */,
 				8B4029D226B2DDAC009066E8 /* SettingsModels.swift in Sources */,
+				8B4029F626B42DA1009066E8 /* FeaturedPlaylistsResponse.swift in Sources */,
 				8B3CAC06263C003D0090D9F6 /* HapticsManager.swift in Sources */,
 				8B3CABDA263BFD7E0090D9F6 /* TabBarViewController.swift in Sources */,
 				8B3CABE8263BFF140090D9F6 /* AuthViewController.swift in Sources */,
@@ -370,6 +377,7 @@
 				3AB2C15026B34F550026220B /* NewReleasesRespone.swift in Sources */,
 				8B3CABF5263BFF7F0090D9F6 /* PlayerViewController.swift in Sources */,
 				8B3CAC03263C001A0090D9F6 /* APICaller.swift in Sources */,
+				8B4029F926B440EE009066E8 /* RecommendedGenresResponse.swift in Sources */,
 				3AB2C14E26ADD5250026220B /* AuthResponse.swift in Sources */,
 				8B3CABEF263BFF4A0090D9F6 /* SettingsViewController.swift in Sources */,
 			);

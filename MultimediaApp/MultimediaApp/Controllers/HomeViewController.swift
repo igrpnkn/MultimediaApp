@@ -29,7 +29,7 @@ class HomeViewController: UIViewController {
                                                             target: self,
                                                             action: #selector(didTapSettings))
         view.addSubview(activityIndicator)
-        fetchNewReleases()
+        fetchData()
     }
     
     override func viewDidLayoutSubviews() {
@@ -45,42 +45,98 @@ class HomeViewController: UIViewController {
         navigationController?.pushViewController(vc, animated: true)
     }
 
+    private func updateUI<T: Codable>(with: T) {
+        Logger.log(object: Self.self, method: #function)
+        DispatchQueue.main.async {
+            let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: self.view.width/2, height: self.view.width/2))
+            if let _ = with as? NewReleasesRespone {
+                imageView.image = UIImage(systemName: "square.grid.3x3.topleft.fill")
+            } else if let _ = with as? FeaturedPlaylistsResponse {
+                imageView.image = UIImage(systemName: "square.grid.3x3.topmiddle.fill")
+            } else if let _ = with as? RecommendedGenresResponse {
+                imageView.image = UIImage(systemName: "square.grid.3x3.topright.fill")
+            } else {
+                return
+            }
+            imageView.tintColor = .spotifyGreen
+            imageView.contentMode = .scaleAspectFill
+            self.view.addSubview(imageView)
+            imageView.center = self.view.center
+            self.activityIndicator.stopAnimating()
+        }
+    }
+    
+    private func failedToFetchData(with error: Error) {
+        Logger.log(object: Self.self, method: #function, message: error.localizedDescription)
+        DispatchQueue.main.async {
+            self.activityIndicator.stopAnimating()
+            let label = UILabel(frame: .zero)
+            label.text = "Failed to fetch some data :("
+            label.textColor = .secondaryLabel
+            label.sizeToFit()
+            self.view.addSubview(label)
+            label.center = self.view.center
+        }
+    }
+}
+
+// MARK: - Fetching Data from API
+
+extension HomeViewController {
+    
+    private func fetchData() {
+        activityIndicator.startAnimating()
+        fetchNewReleases()
+        fetchAllFeaturedPlaylists()
+        fetchRecommendedGenres()
+    }
+    
     private func fetchNewReleases() {
         Logger.log(object: Self.self, method: #function)
-        activityIndicator.startAnimating()
         APICaller.shared.getNewReleases { [weak self] result in
-            DispatchQueue.main.async {
+            DispatchQueue.global(qos: .default).async {
                 switch result {
                 case .success(let model):
                     self?.updateUI(with: model)
                     break
                 case .failure(let error):
-                    self?.failedToGetProfile(with: error)
+                    self?.failedToFetchData(with: error)
                     break
                 }
             }
         }
     }
     
-    private func updateUI(with: NewReleasesRespone) {
+    private func fetchAllFeaturedPlaylists() {
         Logger.log(object: Self.self, method: #function)
-        let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: view.width/2, height: view.width/2))
-        imageView.image = UIImage(systemName: "music.note.house")
-        imageView.tintColor = .spotifyGreen
-        imageView.contentMode = .scaleAspectFill
-        view.addSubview(imageView)
-        imageView.center = view.center
-        activityIndicator.stopAnimating()
+        APICaller.shared.getAllFeaturedPlaylists { [weak self] result in
+            DispatchQueue.global(qos: .default).async {
+                switch result {
+                case .success(let model):
+                    self?.updateUI(with: model)
+                    break
+                case .failure(let error):
+                    self?.failedToFetchData(with: error)
+                    break
+                }
+            }
+        }
     }
     
-    private func failedToGetProfile(with error: Error) {
-        Logger.log(object: Self.self, method: #function, message: error.localizedDescription)
-        activityIndicator.stopAnimating()
-        let label = UILabel(frame: .zero)
-        label.text = "Failed to get new releases :("
-        label.textColor = .secondaryLabel
-        label.sizeToFit()
-        view.addSubview(label)
-        label.center = view.center
+    private func fetchRecommendedGenres() {
+        Logger.log(object: Self.self, method: #function)
+        APICaller.shared.getRecommendedGenres { [weak self] result in
+            DispatchQueue.global(qos: .default).async {
+                switch result {
+                case .success(let model):
+                    self?.updateUI(with: model)
+                    break
+                case .failure(let error):
+                    self?.failedToFetchData(with: error)
+                    break
+                }
+            }
+        }
     }
+    
 }

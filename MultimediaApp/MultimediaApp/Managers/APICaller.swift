@@ -21,11 +21,13 @@ final class APICaller {
         case DELETE
     }
     
-    enum APIError: Error {
-        case failedToGetDate
+    enum APIError: String, Error {
+        case failedToGetDate = "Data from Spotify API was not downloaded or reached. Pealse debug APICaller class."
     }
     
     private init() {}
+    
+    // MARK: - Users Profile API
     
     public func getCurrentUserProfile(completion: @escaping (Result<UserProfile, Error>) -> Void) {
         self.createRequest(with: URL(string: Constants.baseAPIURL + "/me"),
@@ -47,8 +49,10 @@ final class APICaller {
         }
     }
     
+    // MARK: - Browse API
+    
     public func getNewReleases(completion: @escaping (Result<NewReleasesRespone, Error>) -> Void) {
-        createRequest(with: URL(string: Constants.baseAPIURL + "/browse/new-releases?country=RU&offset=0&limit=1"),
+        createRequest(with: URL(string: Constants.baseAPIURL + "/browse/new-releases?country=RU&offset=0&limit=50"),
                       type: .GET) { request in
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
                 guard let data = data, error == nil else {
@@ -67,6 +71,70 @@ final class APICaller {
         }
     }
     
+    public func getAllFeaturedPlaylists(completion: @escaping (Result<FeaturedPlaylistsResponse, Error>) -> Void) {
+        createRequest(with: URL(string: Constants.baseAPIURL + "/browse/featured-playlists?limit=50"),
+                      type: .GET) { request in
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                guard let data = data, error == nil else {
+                    completion(.failure(APIError.failedToGetDate))
+                    return
+                }
+                do {
+                    let result = try JSONDecoder().decode(FeaturedPlaylistsResponse.self, from: data)
+                    //Logger.log(object: Self.self, method: #function, message: "Got All-Featured-Playlists model:", body: result, clarification: nil)
+                    completion(.success(result))
+                } catch {
+                    completion(.failure(error))
+                }
+            }
+            task.resume()
+        }
+    }
+    
+    public func getRecommendations(completion: @escaping (Result<String, Error>) -> Void) {
+        createRequest(with: URL(string: Constants.baseAPIURL + "/recommendations"),
+                      type: .GET) { request in
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                guard let data = data, error == nil else {
+                    completion(.failure(APIError.failedToGetDate))
+                    return
+                }
+                do {
+                    let meta = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
+                    Logger.log(object: Self.self, method: #function, message: "Got Recommendation response:", body: meta, clarification: nil)
+                    //let result = try JSONDecoder().decode(FeaturedPlaylistsResponse.self, from: data)
+                    //Logger.log(object: Self.self, method: #function, message: "Got All-Featured-Playlists model:", body: result, clarification: nil)
+                    completion(.success(String("f")))
+                } catch {
+                    completion(.failure(error))
+                }
+            }
+            task.resume()
+        }
+    }
+    
+    public func getRecommendedGenres(completion: @escaping (Result<RecommendedGenresResponse, Error>) -> Void) {
+        createRequest(with: URL(string: Constants.baseAPIURL + "/recommendations/available-genre-seeds"),
+                      type: .GET) { request in
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                guard let data = data, error == nil else {
+                    completion(.failure(APIError.failedToGetDate))
+                    return
+                }
+                do {
+//                    let meta = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
+//                    Logger.log(object: Self.self, method: #function, message: "Got Recommended-Genres response:", body: meta, clarification: nil)
+                    let result = try JSONDecoder().decode(RecommendedGenresResponse.self, from: data)
+                    Logger.log(object: Self.self, method: #function, message: "Got All-Featured-Playlists model:", body: result, clarification: nil)
+                    completion(.success(result))
+                } catch {
+                    completion(.failure(error))
+                }
+            }
+            task.resume()
+        }
+    }
+    
     // MARK: - Creation common request
     
     private func createRequest(with url: URL?,
@@ -76,7 +144,7 @@ final class APICaller {
             guard let apiURL = url else {
                 return
             }
-            
+
             var request = URLRequest(url: apiURL)
             request.httpMethod = type.rawValue
             request.timeoutInterval = 20
