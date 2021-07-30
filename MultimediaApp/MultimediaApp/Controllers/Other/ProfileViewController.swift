@@ -86,7 +86,7 @@ class ProfileViewController: UIViewController {
         label.center = view.center
     }
     
-    private func createTableHeader(with metaData: UserImage?) {
+    private func createTableHeader(with metaData: APIImage?) {
         Logger.log(object: Self.self, method: #function)
         guard metaData != nil,
               let urlString = metaData?.url,

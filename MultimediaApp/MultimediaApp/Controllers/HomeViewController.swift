@@ -62,8 +62,14 @@ class HomeViewController: UIViewController {
         }
     }
     
-    private func updateUI(with: String) {
+    private func updateUI(with: NewReleasesRespone) {
         Logger.log(object: Self.self, method: #function)
+        let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: view.width/2, height: view.width/2))
+        imageView.image = UIImage(systemName: "music.note.house")
+        imageView.tintColor = .spotifyGreen
+        imageView.contentMode = .scaleAspectFill
+        view.addSubview(imageView)
+        imageView.center = view.center
         activityIndicator.stopAnimating()
     }
     
