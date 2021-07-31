@@ -11,7 +11,7 @@ import UIKit
 extension UIColor {
     
     open class var mainColors: [UIColor] {
-        return [.yellow, .blue, .brown, .link, .cyan, .white, .green, .lightGray, .magenta, .orange, .purple, .red, .black]
+        return [ .spotifyGreen, .yellow, .blue, .brown, .link, .cyan, .white, .green, .lightGray, .magenta, .orange, .purple, .red, .black]
     }
     
     open class var spotifyGreen: UIColor {

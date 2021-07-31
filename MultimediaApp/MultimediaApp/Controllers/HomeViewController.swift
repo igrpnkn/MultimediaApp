@@ -9,9 +9,15 @@ import UIKit
 
 class HomeViewController: UIViewController {
     
+    private enum BrowseSectionType: Int {
+        case newReleases
+        case featuredPlaylists
+        case recommendedTracks
+    }
+    
     private var collectionView = UICollectionView(frame: .zero,
                                                   collectionViewLayout: UICollectionViewCompositionalLayout(sectionProvider: { sectionIndex, _  -> NSCollectionLayoutSection? in
-                                                    return HomeViewController.createSectionLayout(index: sectionIndex)
+                                                    return HomeViewController.createSectionLayout(section: sectionIndex)
                                                   }))
     
     private let activityIndicator: UIActivityIndicatorView = {
@@ -44,35 +50,6 @@ class HomeViewController: UIViewController {
         collectionView.frame = view.bounds
     }
     
-    private static func createSectionLayout(index: Int) -> NSCollectionLayoutSection {
-        let item = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                                                             heightDimension: .fractionalHeight(1.0)))
-        item.contentInsets = NSDirectionalEdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4)
-        let verticalGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
-                                               heightDimension: .absolute(200))
-        let horizontalGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.9),
-                                               heightDimension: .absolute(400))
-        // Vertical group in horizontal group
-        let verticalGroup = NSCollectionLayoutGroup.vertical(layoutSize: verticalGroupSize,
-                                                     subitem: item,
-                                                     count: 2)
-        
-        let horizontalGroup = NSCollectionLayoutGroup.horizontal(layoutSize: horizontalGroupSize,
-                                                     subitem: verticalGroup,
-                                                     count: 3)
-        let section = NSCollectionLayoutSection(group: horizontalGroup)
-        section.orthogonalScrollingBehavior = .groupPaging
-        return section
-    }
-    
-    private func configureCollectionView() {
-        view.addSubview(collectionView)
-        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
-        collectionView.dataSource = self
-        collectionView.delegate = self
-        collectionView.backgroundColor = .systemBackground
-    }
-    
     @objc
     private func didTapSettings() {
         Logger.log(object: Self.self, method: #function)
@@ -84,7 +61,10 @@ class HomeViewController: UIViewController {
     private func updateUI<T: Codable>(with: T) {
         Logger.log(object: Self.self, method: #function)
         DispatchQueue.main.async {
-            let imageView = UIImageView(frame: CGRect(x: 0, y: 0, width: self.view.width/2, height: self.view.width/2))
+            let imageView = UIImageView(frame: CGRect(x: 16,
+                                                      y: (self.view.window?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0)+4,
+                                                      width: 32,
+                                                      height: 32))
             if let _ = with as? NewReleasesRespone {
                 imageView.image = UIImage(systemName: "square.grid.3x3.topleft.fill")
             } else if let _ = with as? FeaturedPlaylistsResponse {
@@ -99,7 +79,6 @@ class HomeViewController: UIViewController {
             imageView.tintColor = .systemGreen
             imageView.contentMode = .scaleAspectFill
             self.view.addSubview(imageView)
-            imageView.center = self.view.center
             self.activityIndicator.stopAnimating()
         }
     }
@@ -118,9 +97,98 @@ class HomeViewController: UIViewController {
     }
 }
 
+// MARK: - CollectionView CollectionLayoutSection
+
+extension HomeViewController {
+    
+    private func configureCollectionView() {
+        view.addSubview(collectionView)
+        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        collectionView.backgroundColor = .systemBackground
+    }
+    
+    private static func createSectionLayout(section: Int) -> NSCollectionLayoutSection {
+        switch section {
+        case 0:
+            return createNewReleasesLayout()
+        case 1:
+            return createFeaturedPlaylistsLayout()
+        case 2:
+            return createRecommendedTracksLayout()
+        default:
+            return NSCollectionLayoutSection(group: NSCollectionLayoutGroup(layoutSize: NSCollectionLayoutSize(widthDimension: .absolute(0), heightDimension: .absolute(0))))
+        }
+    }
+    
+    private static func createNewReleasesLayout() -> NSCollectionLayoutSection {
+        let item = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+                                                                             heightDimension: .fractionalHeight(1.0)))
+        item.contentInsets = NSDirectionalEdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4)
+        let verticalGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+                                               heightDimension: .absolute(360))
+        let horizontalGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.9),
+                                               heightDimension: .absolute(360))
+        // Vertical group in horizontal group
+        let verticalGroup = NSCollectionLayoutGroup.vertical(layoutSize: verticalGroupSize,
+                                                     subitem: item,
+                                                     count: 3)
+        
+        let horizontalGroup = NSCollectionLayoutGroup.horizontal(layoutSize: horizontalGroupSize,
+                                                     subitem: verticalGroup,
+                                                     count: 1)
+        let section = NSCollectionLayoutSection(group: horizontalGroup)
+        section.orthogonalScrollingBehavior = .groupPaging
+        return section
+    }
+    
+    private static func createFeaturedPlaylistsLayout() -> NSCollectionLayoutSection {
+        let baseEdge: CGFloat = 140
+        let item = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(widthDimension: .absolute(baseEdge),
+                                                                             heightDimension: .absolute(baseEdge)))
+        item.contentInsets = NSDirectionalEdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4)
+        
+        let verticalGroupSize = NSCollectionLayoutSize(widthDimension: .absolute(baseEdge),
+                                               heightDimension: .absolute(baseEdge*2))
+        
+        let horizontalGroupSize = NSCollectionLayoutSize(widthDimension: .absolute(baseEdge),
+                                               heightDimension: .absolute(baseEdge*2))
+        
+        let verticalGroup = NSCollectionLayoutGroup.vertical(layoutSize: verticalGroupSize,
+                                                     subitem: item,
+                                                     count: 2)
+        
+        let horizontalGroup = NSCollectionLayoutGroup.horizontal(layoutSize: horizontalGroupSize,
+                                                     subitem: verticalGroup,
+                                                     count: 1)
+        let section = NSCollectionLayoutSection(group: horizontalGroup)
+        section.orthogonalScrollingBehavior = .continuous
+        return section
+    }
+    
+    private static func createRecommendedTracksLayout() -> NSCollectionLayoutSection {
+        let item = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+                                                                             heightDimension: .fractionalHeight(1.0)))
+        item.contentInsets = NSDirectionalEdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4)
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+                                               heightDimension: .absolute(80))
+        let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize,
+                                                     subitem: item,
+                                                     count: 1)
+        let section = NSCollectionLayoutSection(group: group)
+        return section
+    }
+    
+}
+
 // MARK: - CollectionView DataSource
 
 extension HomeViewController: UICollectionViewDataSource {
+    
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 3
+    }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return 12
@@ -128,8 +196,8 @@ extension HomeViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath)
-        cell.backgroundColor = UIColor.mainColors[indexPath.item]
-        cell.layer.cornerRadius = 18
+        cell.backgroundColor = UIColor.mainColors[indexPath.item].withAlphaComponent(0.5)
+        cell.layer.cornerRadius = 10
         return cell
     }
 }
@@ -167,21 +235,21 @@ extension HomeViewController {
         }
     }
     
-     private func fetchAllFeaturedPlaylists() {
-        Logger.log(object: Self.self, method: #function)
-        APICaller.shared.getAllFeaturedPlaylists { [weak self] result in
-            DispatchQueue.global(qos: .default).async {
-                switch result {
-                case .success(let model):
-                    self?.updateUI(with: model)
-                    break
-                case .failure(let error):
-                    self?.failedToFetchData(with: error)
-                    break
-                }
+    private func fetchAllFeaturedPlaylists() {
+    Logger.log(object: Self.self, method: #function)
+    APICaller.shared.getAllFeaturedPlaylists { [weak self] result in
+        DispatchQueue.global(qos: .default).async {
+            switch result {
+            case .success(let model):
+                self?.updateUI(with: model)
+                break
+            case .failure(let error):
+                self?.failedToFetchData(with: error)
+                break
             }
         }
     }
+}
     
     private func fetchRecommendedGenres() {
         Logger.log(object: Self.self, method: #function)
@@ -221,3 +289,4 @@ extension HomeViewController {
     }
     
 }
+
