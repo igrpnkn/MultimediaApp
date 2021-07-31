@@ -10,6 +10,10 @@ import UIKit
 
 extension UIColor {
     
+    open class var mainColors: [UIColor] {
+        return [.yellow, .blue, .brown, .link, .cyan, .white, .green, .lightGray, .magenta, .orange, .purple, .red, .black]
+    }
+    
     open class var spotifyGreen: UIColor {
         return UIColor(red: 36/255, green: 178/255, blue: 78/255, alpha: 1.0)
     }
