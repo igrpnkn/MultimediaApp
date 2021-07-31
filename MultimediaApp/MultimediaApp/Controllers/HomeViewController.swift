@@ -8,7 +8,12 @@
 import UIKit
 
 class HomeViewController: UIViewController {
-
+    
+    private var collectionView = UICollectionView(frame: .zero,
+                                                  collectionViewLayout: UICollectionViewCompositionalLayout(sectionProvider: { sectionIndex, _  -> NSCollectionLayoutSection? in
+                                                    return HomeViewController.createSectionLayout(index: sectionIndex)
+                                                  }))
+    
     private let activityIndicator: UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView(frame: .zero)
         indicator.style = .large
@@ -29,12 +34,36 @@ class HomeViewController: UIViewController {
                                                             target: self,
                                                             action: #selector(didTapSettings))
         view.addSubview(activityIndicator)
+        configureCollectionView()
         fetchData()
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         activityIndicator.frame = CGRect(x: 0, y: 0, width: view.width, height: view.height)
+        collectionView.frame = view.bounds
+    }
+    
+    private static func createSectionLayout(index: Int) -> NSCollectionLayoutSection {
+        let item = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+                                                                             heightDimension: .fractionalHeight(1.0)))
+        item.contentInsets = NSDirectionalEdgeInsets(top: 4, leading: 16, bottom: 4, trailing: 0)
+        let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
+                                               heightDimension: .absolute(120))
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize,
+                                                     subitem: item,
+                                                     count: 2)
+        let section = NSCollectionLayoutSection(group: group)
+        section.orthogonalScrollingBehavior = .continuous
+        return section
+    }
+    
+    private func configureCollectionView() {
+        view.addSubview(collectionView)
+        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        collectionView.backgroundColor = .systemOrange
     }
     
     @objc
@@ -60,7 +89,7 @@ class HomeViewController: UIViewController {
             } else {
                 return
             }
-            imageView.tintColor = .spotifyGreen
+            imageView.tintColor = .systemGreen
             imageView.contentMode = .scaleAspectFill
             self.view.addSubview(imageView)
             imageView.center = self.view.center
@@ -80,6 +109,28 @@ class HomeViewController: UIViewController {
             label.center = self.view.center
         }
     }
+}
+
+// MARK: - CollectionView DataSource
+
+extension HomeViewController: UICollectionViewDataSource {
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 10
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath)
+        cell.backgroundColor = .spotifyGreen
+        cell.layer.cornerRadius = 18
+        return cell
+    }
+}
+
+// MARK: - CollectionView Delegate
+
+extension HomeViewController: UICollectionViewDelegate {
+    
 }
 
 // MARK: - Fetching Data from API

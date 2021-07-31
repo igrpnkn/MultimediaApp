@@ -12,10 +12,9 @@ class TabBarViewController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Tab Bar Controller"
-        view.backgroundColor = .brown
         tabBar.tintColor = .spotifyGreen
-        tabBar.barTintColor = .secondarySystemBackground
         tabBar.isOpaque = true
+        tabBar.isTranslucent = true
         setBarTree()
     }
     
