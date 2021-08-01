@@ -106,7 +106,7 @@ extension HomeViewController {
         collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
         collectionView.dataSource = self
         collectionView.delegate = self
-        collectionView.backgroundColor = .systemBackground
+        collectionView.backgroundColor = .secondarySystemBackground
     }
     
     private static func createSectionLayout(section: Int) -> NSCollectionLayoutSection {
@@ -196,8 +196,37 @@ extension HomeViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath)
-        cell.backgroundColor = UIColor.mainColors[indexPath.item].withAlphaComponent(0.5)
-        cell.layer.cornerRadius = 10
+        guard #available(iOS 14.0, *) else {
+            return cell
+        }
+        if (indexPath.section == 0) {
+            var content = UIListContentConfiguration.cell()
+            content.image = UIImage(systemName: "play.rectangle.fill")
+            content.text = "New Release"
+            content.secondaryText = "The latest release will be available soon."
+            cell.contentConfiguration = content
+            cell.tintColor = UIColor.mainColors.randomElement() ?? .spotifyGreen
+            cell.backgroundColor = (UIColor.mainColors.randomElement() ?? .spotifyGreen).withAlphaComponent(0.4)
+        } else if (indexPath.section == 1) {
+            var content = UIListContentConfiguration.cell()
+            content.image = UIImage(systemName: "music.note.list")
+            content.text = "Featured Playlist"
+            content.secondaryText = "The FP will be here."
+            cell.contentConfiguration = content
+            cell.tintColor = UIColor.mainColors.randomElement() ?? .spotifyGreen
+            cell.backgroundColor = (UIColor.mainColors.randomElement() ?? .spotifyGreen).withAlphaComponent(0.4)
+        } else if (indexPath.section == 2) {
+            var content = UIListContentConfiguration.cell()
+            content.image = UIImage(systemName: "star.leadinghalf.fill")
+            content.text = "Recommended Track"
+            content.secondaryText = "The track only for your is coming..."
+            cell.contentConfiguration = content
+            cell.tintColor = UIColor.mainColors.randomElement() ?? .spotifyGreen
+            cell.backgroundColor = (UIColor.mainColors.randomElement() ?? .spotifyGreen).withAlphaComponent(0.4)
+        } else {
+            cell.backgroundColor = (UIColor.mainColors.randomElement() ?? .spotifyGreen).withAlphaComponent(0.4)
+        }
+        cell.layer.cornerRadius = 12
         return cell
     }
 }
