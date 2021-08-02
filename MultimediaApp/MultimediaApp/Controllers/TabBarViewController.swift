@@ -13,7 +13,7 @@ class TabBarViewController: UITabBarController {
         super.viewDidLoad()
         title = "Tab Bar Controller"
         tabBar.tintColor = .spotifyGreen
-        tabBar.isOpaque = true
+        tabBar.isOpaque = false
         tabBar.isTranslucent = true
         setBarTree()
     }
