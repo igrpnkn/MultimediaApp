@@ -75,6 +75,8 @@ class HomeViewController: UIViewController {
                 imageView.image = UIImage(systemName: "square.grid.3x3.middleleft.fill")
             } else if let _ = with as? AudioTrack {
                 imageView.image = UIImage(systemName: "square.grid.3x3.middle.fill")
+            } else if let _ = with as? AudioTracks {
+                imageView.image = UIImage(systemName: "square.grid.3x3.middleright.fill")
             } else {
                 return
             }
@@ -316,7 +318,7 @@ extension HomeViewController {
             case .success(let model):
                 self?.updateUI(with: model)
                 self?.fetchTrack(with: model.tracks.first?.id ?? "")
-                self?.fetchSeveralTracks(with: model)
+                self?.fetchSeveralTracks(with: model.tracks)
                 break
             case .failure(let error):
                 self?.failedToFetchData(with: error)
@@ -341,9 +343,9 @@ extension HomeViewController {
         }
     }
     
-    private func fetchSeveralTracks(with model: RecommendationsResponse) {
+    private func fetchSeveralTracks(with model: [AudioTrack]) {
         Logger.log(object: Self.self, method: #function)
-        let tracks = model.tracks
+        let tracks = model
         var ids = Set<String>()
         while ids.count <= 15 {
             if let random = tracks.randomElement()?.id {
@@ -354,7 +356,6 @@ extension HomeViewController {
             DispatchQueue.global(qos: .default).async {
                 switch result {
                 case .success(let model):
-                    self?.recommendedTracks = model.tracks
                     self?.updateUI(with: model)
                     break
                 case .failure(let error):

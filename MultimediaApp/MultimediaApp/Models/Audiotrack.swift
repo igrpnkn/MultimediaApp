@@ -27,3 +27,6 @@ struct AudioTrack: Codable {
     let uri: String
 }
 
+struct AudioTracks: Codable {
+    let tracks: [AudioTrack]
+}

@@ -134,7 +134,7 @@ final class APICaller {
     
     // MARK: - Tracks API
     
-    public func getSeveralTracks(with ids: Set<String>, completion: @escaping (Result<RecommendationsResponse, Error>) -> Void) {
+    public func getSeveralTracks(with ids: Set<String>, completion: @escaping (Result<AudioTracks, Error>) -> Void) {
         let trackIDs = ids.joined(separator: ",")
         createRequest(with: URL(string: Constants.baseAPIURL + "/tracks?ids=\(trackIDs)"), type: .GET) { request in
             let task = URLSession.shared.dataTask(with: request) { data, response, error in
@@ -143,7 +143,7 @@ final class APICaller {
                     return
                 }
                 do {
-                    let result = try JSONDecoder().decode(RecommendationsResponse.self, from: data)
+                    let result = try JSONDecoder().decode(AudioTracks.self, from: data)
 //                    Logger.log(object: Self.self, method: #function, message: "Got Track model:", body: result, clarification: nil)
                     completion(.success(result))
                 } catch {
