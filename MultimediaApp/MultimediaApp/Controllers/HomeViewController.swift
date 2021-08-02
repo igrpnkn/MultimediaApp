@@ -73,6 +73,8 @@ class HomeViewController: UIViewController {
                 imageView.image = UIImage(systemName: "square.grid.3x3.topright.fill")
             } else if let _ = with as? RecommendationsResponse {
                 imageView.image = UIImage(systemName: "square.grid.3x3.middleleft.fill")
+            } else if let _ = with as? AudioTrack {
+                imageView.image = UIImage(systemName: "square.grid.3x3.middle.fill")
             } else {
                 return
             }
@@ -123,9 +125,10 @@ extension HomeViewController {
     }
     
     private static func createNewReleasesLayout() -> NSCollectionLayoutSection {
+        let offset: CGFloat = 10
         let item = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
                                                                              heightDimension: .fractionalHeight(1.0)))
-        item.contentInsets = NSDirectionalEdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4)
+        item.contentInsets = NSDirectionalEdgeInsets(top: offset, leading: offset, bottom: offset, trailing: offset)
         let verticalGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
                                                heightDimension: .absolute(360))
         let horizontalGroupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(0.9),
@@ -145,9 +148,10 @@ extension HomeViewController {
     
     private static func createFeaturedPlaylistsLayout() -> NSCollectionLayoutSection {
         let baseEdge: CGFloat = 140
+        let offset: CGFloat = 10
         let item = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(widthDimension: .absolute(baseEdge),
                                                                              heightDimension: .absolute(baseEdge)))
-        item.contentInsets = NSDirectionalEdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4)
+        item.contentInsets = NSDirectionalEdgeInsets(top: offset, leading: offset, bottom: offset, trailing: offset)
         
         let verticalGroupSize = NSCollectionLayoutSize(widthDimension: .absolute(baseEdge),
                                                heightDimension: .absolute(baseEdge*2))
@@ -168,9 +172,10 @@ extension HomeViewController {
     }
     
     private static func createRecommendedTracksLayout() -> NSCollectionLayoutSection {
+        let offset: CGFloat = 10
         let item = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
                                                                              heightDimension: .fractionalHeight(1.0)))
-        item.contentInsets = NSDirectionalEdgeInsets(top: 4, leading: 4, bottom: 4, trailing: 4)
+        item.contentInsets = NSDirectionalEdgeInsets(top: offset, leading: offset, bottom: offset, trailing: offset)
         let groupSize = NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0),
                                                heightDimension: .absolute(80))
         let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize,
@@ -305,14 +310,57 @@ extension HomeViewController {
     }
     
     private func fetchRecommendations(genres: Set<String>) {
+        Logger.log(object: Self.self, method: #function)
         APICaller.shared.getRecommendations(genres: genres) { [weak self] result in
             switch result {
             case .success(let model):
                 self?.updateUI(with: model)
+                self?.fetchTrack(with: model.tracks.first?.id ?? "")
+                self?.fetchSeveralTracks(with: model)
                 break
             case .failure(let error):
                 self?.failedToFetchData(with: error)
                 break
+            }
+        }
+    }
+    
+    private func fetchTrack(with id: String) {
+        Logger.log(object: Self.self, method: #function)
+        APICaller.shared.getTrack(with: id) { [weak self] result in
+            DispatchQueue.global(qos: .default).async {
+                switch result {
+                case .success(let model):
+                    self?.updateUI(with: model)
+                    break
+                case .failure(let error):
+                    self?.failedToFetchData(with: error)
+                    break
+                }
+            }
+        }
+    }
+    
+    private func fetchSeveralTracks(with model: RecommendationsResponse) {
+        Logger.log(object: Self.self, method: #function)
+        let tracks = model.tracks
+        var ids = Set<String>()
+        while ids.count <= 15 {
+            if let random = tracks.randomElement()?.id {
+                ids.insert(random)
+            }
+        }
+        APICaller.shared.getSeveralTracks(with: ids) { [weak self] result in
+            DispatchQueue.global(qos: .default).async {
+                switch result {
+                case .success(let model):
+                    self?.recommendedTracks = model.tracks
+                    self?.updateUI(with: model)
+                    break
+                case .failure(let error):
+                    self?.failedToFetchData(with: error)
+                    break
+                }
             }
         }
     }

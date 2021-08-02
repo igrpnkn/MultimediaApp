@@ -101,10 +101,8 @@ final class APICaller {
                     return
                 }
                 do {
-//                    let meta = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
-//                    Logger.log(object: Self.self, method: #function, message: "Got Recommendation response:", body: meta, clarification: nil)
                     let result = try JSONDecoder().decode(RecommendationsResponse.self, from: data)
-                    Logger.log(object: Self.self, method: #function, message: "Got Recommendations model:", body: result, clarification: nil)
+                    //Logger.log(object: Self.self, method: #function, message: "Got Recommendations model:", body: result, clarification: nil)
                     completion(.success(result))
                 } catch {
                     completion(.failure(error))
@@ -125,6 +123,47 @@ final class APICaller {
                 do {
                     let result = try JSONDecoder().decode(RecommendedGenresResponse.self, from: data)
 //                    Logger.log(object: Self.self, method: #function, message: "Got Recommended-Genres model:", body: result, clarification: nil)
+                    completion(.success(result))
+                } catch {
+                    completion(.failure(error))
+                }
+            }
+            task.resume()
+        }
+    }
+    
+    // MARK: - Tracks API
+    
+    public func getSeveralTracks(with ids: Set<String>, completion: @escaping (Result<RecommendationsResponse, Error>) -> Void) {
+        let trackIDs = ids.joined(separator: ",")
+        createRequest(with: URL(string: Constants.baseAPIURL + "/tracks?ids=\(trackIDs)"), type: .GET) { request in
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                guard let data = data, error == nil else {
+                    completion(.failure(APIError.failedToGetDate))
+                    return
+                }
+                do {
+                    let result = try JSONDecoder().decode(RecommendationsResponse.self, from: data)
+//                    Logger.log(object: Self.self, method: #function, message: "Got Track model:", body: result, clarification: nil)
+                    completion(.success(result))
+                } catch {
+                    completion(.failure(error))
+                }
+            }
+            task.resume()
+        }
+    }
+    
+    public func getTrack(with id: String, completion: @escaping (Result<AudioTrack, Error>) -> Void) {
+        createRequest(with: URL(string: Constants.baseAPIURL + "/tracks/\(id)"), type: .GET) { request in
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                guard let data = data, error == nil else {
+                    completion(.failure(APIError.failedToGetDate))
+                    return
+                }
+                do {
+                    let result = try JSONDecoder().decode(AudioTrack.self, from: data)
+//                    Logger.log(object: Self.self, method: #function, message: "Got Track model:", body: result, clarification: nil)
                     completion(.success(result))
                 } catch {
                     completion(.failure(error))
