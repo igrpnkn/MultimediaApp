@@ -17,27 +17,27 @@ class NewReleaseCollectionViewCell: UICollectionViewCell {
         imageView.image = UIImage(systemName: "photo")
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
-        imageView.layer.cornerRadius = 12
+        imageView.layer.cornerRadius = 10
         return imageView
     }()
     
     private let albumNameLabel: UILabel = {
         let albumLabel = UILabel()
-        albumLabel.font = .systemFont(ofSize: 20, weight: .semibold)
+        albumLabel.font = .systemFont(ofSize: 16, weight: .semibold)
         albumLabel.numberOfLines = 1
         return albumLabel
     }()
     
     private let numberOfTracksLabel: UILabel = {
         let numberOfTracksLabel = UILabel()
-        numberOfTracksLabel.font = .systemFont(ofSize: 16, weight: .regular)
+        numberOfTracksLabel.font = .systemFont(ofSize: 10, weight: .regular)
         numberOfTracksLabel.numberOfLines = 1
         return numberOfTracksLabel
     }()
     
     private let artistNameLabel: UILabel = {
         let artistNameLabel = UILabel()
-        artistNameLabel.font = .systemFont(ofSize: 18, weight: .medium)
+        artistNameLabel.font = .systemFont(ofSize: 14, weight: .medium)
         artistNameLabel.numberOfLines = 1
         return artistNameLabel
     }()
@@ -61,7 +61,7 @@ class NewReleaseCollectionViewCell: UICollectionViewCell {
         contentView.layer.cornerRadius = 12
         let imageSize: CGFloat = contentView.height - 10
         let albumLabelSize = albumNameLabel.sizeThatFits(CGSize(width:  contentView.width-imageSize-20,
-                                                                height: contentView.height-10))
+                                                                height: contentView.height-60))
         albumCoverImageView.frame = CGRect(x: 5,
                                            y: 5,
                                            width: imageSize,
