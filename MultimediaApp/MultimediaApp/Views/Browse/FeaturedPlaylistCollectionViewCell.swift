@@ -38,7 +38,7 @@ class FeaturedPlaylistCollectionViewCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        contentView.backgroundColor = .tertiarySystemBackground//UIColor.mainColors.randomElement()?.withAlphaComponent(0.5)
+        contentView.backgroundColor = .systemBackground//UIColor.mainColors.randomElement()?.withAlphaComponent(0.5)
         contentView.clipsToBounds = true
         contentView.addSubview(playlistCoverImageView)
         contentView.addSubview(playlistNameLabel)

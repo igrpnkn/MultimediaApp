@@ -9,6 +9,10 @@ import UIKit
 
 class HomeViewController: UIViewController {
     
+    private var newAlbums: [Album] = []
+    private var playlists: [Playlist] = []
+    private var tracks: [AudioTrack] = []
+    
     private enum BrowseSectionType {
         case newReleases(viewModels: [NewReleasesCellViewModel])
         case featuredPlaylists(viewModels: [FeaturedPlaylistCellViewModel])
@@ -199,6 +203,10 @@ extension HomeViewController {
 extension HomeViewController: UICollectionViewDataSource {
     
     private func configureModels(newAlbums: [Album], playlists: [Playlist], tracks: [AudioTrack]) {
+        self.newAlbums = newAlbums
+        self.playlists = playlists
+        self.tracks = tracks
+        
         sections.append(.newReleases(viewModels: newAlbums.compactMap({
             return NewReleasesCellViewModel(name: $0.name,
                                             artworkURL: URL(string: $0.images.first?.url ?? ""),
@@ -214,7 +222,7 @@ extension HomeViewController: UICollectionViewDataSource {
         sections.append(.recommendedTracks(viewModels: tracks.compactMap({
             return RecommendedTrackCellViewModel(name: $0.name,
                                                  artistName: $0.artists.first?.name ?? "Unknown",
-                                                 artworkURL: URL(string: $0.album.images.first?.url ?? ""),
+                                                 artworkURL: URL(string: $0.album?.images.first?.url ?? ""),
                                                  duration: $0.duration_ms)
         })))
         collectionView.reloadData()
@@ -267,6 +275,28 @@ extension HomeViewController: UICollectionViewDataSource {
 // MARK: - CollectionView Delegate
 
 extension HomeViewController: UICollectionViewDelegate {
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        collectionView.deselectItem(at: indexPath, animated: true)
+        let section = sections[indexPath.section]
+        switch section {
+        case .newReleases:
+            let vc = AlbumViewController(with: newAlbums[indexPath.row])
+            vc.navigationItem.largeTitleDisplayMode = .always
+            navigationController?.pushViewController(vc, animated: true)
+            break
+        case .featuredPlaylists:
+            let vc = PlaylistViewController(with: playlists[indexPath.row])
+            vc.navigationItem.largeTitleDisplayMode = .always
+            navigationController?.pushViewController(vc, animated: true)
+            break
+        case .recommendedTracks:
+            let vc = AlbumViewController(with: newAlbums[indexPath.row])
+            vc.navigationItem.largeTitleDisplayMode = .always
+            navigationController?.pushViewController(vc, animated: true)
+            break
+        }
+    }
     
 }
 
