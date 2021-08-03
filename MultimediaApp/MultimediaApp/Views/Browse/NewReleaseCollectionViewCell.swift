@@ -23,14 +23,21 @@ class NewReleaseCollectionViewCell: UICollectionViewCell {
     
     private let albumNameLabel: UILabel = {
         let albumLabel = UILabel()
-        albumLabel.font = .systemFont(ofSize: 16, weight: .semibold)
-        albumLabel.numberOfLines = 1
+        albumLabel.font = .systemFont(ofSize: 18, weight: .semibold)
+        albumLabel.numberOfLines = 2
         return albumLabel
     }()
     
     private let numberOfTracksLabel: UILabel = {
         let numberOfTracksLabel = UILabel()
-        numberOfTracksLabel.font = .systemFont(ofSize: 10, weight: .regular)
+        numberOfTracksLabel.font = .systemFont(ofSize: 12, weight: .regular)
+        numberOfTracksLabel.numberOfLines = 1
+        return numberOfTracksLabel
+    }()
+    
+    private let albumTypeLabel: UILabel = {
+        let numberOfTracksLabel = UILabel()
+        numberOfTracksLabel.font = .systemFont(ofSize: 12, weight: .regular)
         numberOfTracksLabel.numberOfLines = 1
         return numberOfTracksLabel
     }()
@@ -44,11 +51,12 @@ class NewReleaseCollectionViewCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        contentView.backgroundColor = UIColor.mainColors.randomElement()?.withAlphaComponent(0.3)
+        contentView.backgroundColor = UIColor.mainColors.randomElement()?.withAlphaComponent(0.5)
         contentView.clipsToBounds = true
         contentView.addSubview(albumCoverImageView)
         contentView.addSubview(albumNameLabel)
         contentView.addSubview(artistNameLabel)
+        contentView.addSubview(albumTypeLabel)
         contentView.addSubview(numberOfTracksLabel)
     }
     
@@ -61,7 +69,7 @@ class NewReleaseCollectionViewCell: UICollectionViewCell {
         contentView.layer.cornerRadius = 12
         let imageSize: CGFloat = contentView.height - 10
         let albumLabelSize = albumNameLabel.sizeThatFits(CGSize(width:  contentView.width-imageSize-20,
-                                                                height: contentView.height-60))
+                                                                height: contentView.height-100))
         albumCoverImageView.frame = CGRect(x: 5,
                                            y: 5,
                                            width: imageSize,
@@ -71,13 +79,17 @@ class NewReleaseCollectionViewCell: UICollectionViewCell {
                                       width: albumLabelSize.width,
                                       height: min(50, albumLabelSize.height))
         artistNameLabel.frame = CGRect(x: albumCoverImageView.right+10,
-                                       y: albumNameLabel.bottom+5,
-                                       width: contentView.width-albumCoverImageView.right-5,
-                                      height: min(50, albumLabelSize.height))
-        numberOfTracksLabel.frame = CGRect(x: albumCoverImageView.right+10,
-                                           y: albumCoverImageView.bottom-32,
+                                       y: albumNameLabel.bottom,
+                                       width: contentView.width-albumCoverImageView.right-15,
+                                      height: min(28, albumLabelSize.height))
+        albumTypeLabel.frame = CGRect(x: albumCoverImageView.right+10,
+                                           y: albumCoverImageView.bottom-22,
+                                           width: (contentView.width-albumCoverImageView.width)/2,
+                                           height: 22)
+        numberOfTracksLabel.frame = CGRect(x: albumTypeLabel.right,
+                                           y: albumCoverImageView.bottom-22,
                                            width: contentView.width-albumCoverImageView.width-20,
-                                           height: 32)
+                                           height: 22)
     }
     
     override func prepareForReuse() {
@@ -85,6 +97,7 @@ class NewReleaseCollectionViewCell: UICollectionViewCell {
         albumNameLabel.text = nil
         artistNameLabel.text = nil
         numberOfTracksLabel.text = nil
+        albumTypeLabel.text = nil
         albumCoverImageView.image = nil
     }
     
@@ -92,6 +105,7 @@ class NewReleaseCollectionViewCell: UICollectionViewCell {
         albumNameLabel.text = viewModel.name
         artistNameLabel.text = viewModel.artistName
         numberOfTracksLabel.text = "Tracks: \(viewModel.numberOfTracks)"
+        albumTypeLabel.text = "💽 \(viewModel.albumType.localizedCapitalized)"
         albumCoverImageView.sd_setImage(with: viewModel.artworkURL, completed: nil)
     }
     

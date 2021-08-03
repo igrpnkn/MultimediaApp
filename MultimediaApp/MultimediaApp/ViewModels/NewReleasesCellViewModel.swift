@@ -12,4 +12,5 @@ struct NewReleasesCellViewModel {
     let artworkURL: URL?
     let numberOfTracks: Int
     let artistName: String
+    let albumType: String
 }

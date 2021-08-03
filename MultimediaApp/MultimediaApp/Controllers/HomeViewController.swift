@@ -11,8 +11,8 @@ class HomeViewController: UIViewController {
     
     private enum BrowseSectionType {
         case newReleases(viewModels: [NewReleasesCellViewModel])
-        case featuredPlaylists(viewModels: [FeaturedPlaylistCollectionViewCell])
-        case recommendedTracks(viewModels: [RecommendedTrackCollectionViewCell])
+        case featuredPlaylists(viewModels: [FeaturedPlaylistCellViewModel])
+        case recommendedTracks(viewModels: [RecommendedTrackCellViewModel])
     }
     
     private var collectionView = UICollectionView(frame: .zero,
@@ -115,7 +115,7 @@ extension HomeViewController {
         collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "cell")
         collectionView.dataSource = self
         collectionView.delegate = self
-        collectionView.backgroundColor = .secondarySystemBackground
+        collectionView.backgroundColor = .systemBackground
     }
     
     private static func createSectionLayout(section: Int) -> NSCollectionLayoutSection {
@@ -154,7 +154,7 @@ extension HomeViewController {
     }
     
     private static func createFeaturedPlaylistsLayout() -> NSCollectionLayoutSection {
-        let baseEdge: CGFloat = 140
+        let baseEdge: CGFloat = 160
         let offset: CGFloat = 10
         let item = NSCollectionLayoutItem(layoutSize: NSCollectionLayoutSize(widthDimension: .absolute(baseEdge),
                                                                              heightDimension: .absolute(baseEdge)))
@@ -203,10 +203,20 @@ extension HomeViewController: UICollectionViewDataSource {
             return NewReleasesCellViewModel(name: $0.name,
                                             artworkURL: URL(string: $0.images.first?.url ?? ""),
                                             numberOfTracks: $0.total_tracks,
-                                            artistName: $0.artists.first?.name ?? "Unknown")
+                                            artistName: $0.artists.first?.name ?? "Unknown",
+                                            albumType: $0.type)
         })))
-        sections.append(.newReleases(viewModels: []))
-        sections.append(.newReleases(viewModels: []))
+        sections.append(.featuredPlaylists(viewModels: playlists.compactMap({
+            return FeaturedPlaylistCellViewModel(name:  $0.name,
+                                                 artworkURL: URL(string: $0.images.first?.url ?? ""),
+                                                 creatorName: $0.owner.display_name)
+        })))
+        sections.append(.recommendedTracks(viewModels: tracks.compactMap({
+            return RecommendedTrackCellViewModel(name: $0.name,
+                                                 artistName: $0.artists.first?.name ?? "Unknown",
+                                                 artworkURL: URL(string: $0.album.images.first?.url ?? ""),
+                                                 duration: $0.duration_ms)
+        })))
         collectionView.reloadData()
     }
     
@@ -240,15 +250,15 @@ extension HomeViewController: UICollectionViewDataSource {
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: FeaturedPlaylistCollectionViewCell.identifier, for: indexPath) as? FeaturedPlaylistCollectionViewCell else {
                 return UICollectionViewCell()
             }
-            cell.backgroundColor = .orange
-            cell.layer.cornerRadius = 12
+            let viewModel = viewModels[indexPath.row]
+            cell.configureViewModel(with: viewModel)
             return cell
         case .recommendedTracks(let viewModels):
             guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: RecommendedTrackCollectionViewCell.identifier, for: indexPath) as? RecommendedTrackCollectionViewCell else {
                 return UICollectionViewCell()
             }
-            cell.backgroundColor = .brown
-            cell.layer.cornerRadius = 12
+            let viewModel = viewModels[indexPath.row]
+            cell.configureViewModel(with: viewModel)
             return cell
         }
     }
@@ -338,7 +348,6 @@ extension HomeViewController {
                   let playlists = featuredPlaylists?.playlists.items,
                   let tracks = recommendations?.tracks else {
                 fatalError("Models are nil.")
-                return
             }
             Logger.log(object: Self.self, method: #function, message: "Configuring View Models.")
             self.configureModels(newAlbums: newAlbums,
