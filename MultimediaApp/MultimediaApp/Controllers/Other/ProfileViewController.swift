@@ -96,7 +96,7 @@ class ProfileViewController: UIViewController {
             return
         }
         let headerView = UIView(frame: CGRect(x: 0, y: 0, width: view.width, height: view.width))
-        headerView.backgroundColor = .secondarySystemBackground
+        headerView.backgroundColor = navigationController?.navigationBar.backgroundColor
         
         let imageSize = headerView.height*0.8
         
@@ -116,7 +116,7 @@ class ProfileViewController: UIViewController {
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = imageView.height*0.16
-        imageView.sd_setImage(with: url, completed: nil)
+        imageView.sd_setImage(with: url, placeholderImage: UIImage(systemName: "person.crop.circle.fill"), options: .delayPlaceholder, completed: nil)
         
         tableView.tableHeaderView = headerView
     }

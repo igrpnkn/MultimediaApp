@@ -166,7 +166,7 @@ final class APICaller {
                 }
                 do {
                     let result = try JSONDecoder().decode(Playlist.self, from: data)
-                    print(result)
+                    Logger.log(object: Self.self, method: #function, message: "Playlist model has been parsed successfully.")
                     completion(.success(result))
                 } catch {
                     Logger.log(object: Self.self, method: #function, message: "ERROR:", body: error, clarification: nil)

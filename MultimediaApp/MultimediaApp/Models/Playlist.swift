@@ -35,4 +35,14 @@ struct PlaylistOwner: Codable {
 struct PlaylistTracks: Codable {
     let href: String
     let total: Int
+    let items: [PlaylistTracksItem]?
+    let limit: Int?
+    let offset: Int?
+    let next: String?
+    let previous: String?
+}
+
+struct PlaylistTracksItem: Codable {
+//    let date: Date
+    let track: AudioTrack
 }

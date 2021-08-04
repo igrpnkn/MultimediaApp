@@ -83,7 +83,7 @@ class RecommendedTrackCollectionViewCell: UICollectionViewCell {
     func configureViewModel(with viewModel: RecommendedTrackCellViewModel) {
         trackNameLabel.text = viewModel.name
         artistNameLabel.text = viewModel.artistName
-        albumCoverImageView.sd_setImage(with: viewModel.artworkURL, completed: nil)
+        albumCoverImageView.sd_setImage(with: viewModel.artworkURL, placeholderImage: UIImage(systemName: "opticaldisc"), options: .delayPlaceholder, completed: nil) //sd_setImage(with: viewModel.artworkURL, completed: nil)
         let totalSeconds = (viewModel.duration/1000)
         let minutes = totalSeconds/60
         let seconds = totalSeconds%60

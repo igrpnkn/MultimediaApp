@@ -45,8 +45,8 @@ class HomeViewController: UIViewController {
                                                             style: .done,
                                                             target: self,
                                                             action: #selector(didTapSettings))
-        view.addSubview(activityIndicator)
         configureCollectionView()
+        view.addSubview(activityIndicator)
         fetchData()
     }
     
@@ -291,9 +291,9 @@ extension HomeViewController: UICollectionViewDelegate {
             navigationController?.pushViewController(vc, animated: true)
             break
         case .recommendedTracks:
-            let vc = AlbumViewController(with: newAlbums[indexPath.row])
-            vc.navigationItem.largeTitleDisplayMode = .always
-            navigationController?.pushViewController(vc, animated: true)
+//            let vc = PlaylistViewController(with: playlists[indexPath.row])
+//            vc.navigationItem.largeTitleDisplayMode = .always
+//            navigationController?.pushViewController(vc, animated: true)
             break
         }
     }
@@ -383,6 +383,7 @@ extension HomeViewController {
             self.configureModels(newAlbums: newAlbums,
                                  playlists: playlists,
                                  tracks: tracks)
+            self.activityIndicator.stopAnimating()
         }
     }
     
