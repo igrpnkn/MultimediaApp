@@ -8,7 +8,7 @@
 import UIKit
 
 class PlaylistViewController: UIViewController {
-
+ 
     private let playlist: Playlist
     
     private var recommendedTracksViewModels = [RecommendedTrackCellViewModel]()
@@ -126,6 +126,8 @@ extension PlaylistViewController {
     }
 }
 
+// MARK: - CollectionView DataSource
+
 extension PlaylistViewController: UICollectionViewDataSource {
     
     func numberOfSections(in collectionView: UICollectionView) -> Int {
@@ -159,6 +161,8 @@ extension PlaylistViewController: UICollectionViewDataSource {
     }
         
 }
+
+// MARK: - CollectionView Delegate
 
 extension PlaylistViewController: UICollectionViewDelegate {
     

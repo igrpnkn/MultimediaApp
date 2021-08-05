@@ -22,7 +22,7 @@ final class PlaylistHeaderCollectionReusableView: UICollectionReusableView {
     
     private let coverImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(systemName: "photo")
+        imageView.image = UIImage(systemName: "opticaldisc")
         imageView.contentMode = .scaleAspectFill
         return imageView
     }()
@@ -60,7 +60,7 @@ final class PlaylistHeaderCollectionReusableView: UICollectionReusableView {
                             withConfiguration: UIImage.SymbolConfiguration(pointSize: 32, weight: .medium))
         button.setImage(image, for: .normal)
         button.tintColor = .white
-        button.layer.cornerRadius = 27
+        button.layer.cornerRadius = 24
         button.layer.masksToBounds = true
         return button
     }()
@@ -87,18 +87,18 @@ final class PlaylistHeaderCollectionReusableView: UICollectionReusableView {
                                       y: 0,
                                       width: imageSize,
                                       height: imageSize)
-        nameLabel.frame = CGRect(x: 10, y: coverImageView.bottom+20, width: width-10, height: 40)
+        nameLabel.frame = CGRect(x: 15, y: coverImageView.bottom+20, width: width-30, height: 40)
         nameLabel.sizeToFit()
-        descriptionLabel.frame = CGRect(x: 10, y: nameLabel.bottom+10, width: width-10, height: 80)
+        descriptionLabel.frame = CGRect(x: 15, y: nameLabel.bottom+10, width: width-30, height: 80)
         descriptionLabel.sizeToFit()
-        ownerLabel.frame = CGRect(x: 10, y: descriptionLabel.bottom+10, width: width-10, height: 20)
-        playAllButton.frame = CGRect(x: width-80, y: height-80, width: 54, height: 54)
+        ownerLabel.frame = CGRect(x: 15, y: descriptionLabel.bottom+10, width: width-30, height: 20)
+        playAllButton.frame = CGRect(x: width-68, y: height-58, width: 48, height: 48)
     }
     
     public func configure(with viewModel: PlaylistHeaderCollectionReusableViewViewModel) {
         self.nameLabel.text = viewModel.playlistName
         self.descriptionLabel.text = viewModel.description
-        self.ownerLabel.text = viewModel.ownerName
+        self.ownerLabel.text = viewModel.ownerName.localizedCapitalized
         self.coverImageView.sd_setImage(with: viewModel.artworkURL,
                                         placeholderImage: UIImage(systemName: "music.note.list"),
                                         options: .lowPriority,

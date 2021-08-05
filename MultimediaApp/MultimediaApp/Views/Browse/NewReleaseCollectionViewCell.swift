@@ -14,7 +14,7 @@ class NewReleaseCollectionViewCell: UICollectionViewCell {
     
     private let albumCoverImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(systemName: "photo")
+        imageView.image = UIImage(systemName: "opticaldisc")
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = 10
@@ -106,7 +106,7 @@ class NewReleaseCollectionViewCell: UICollectionViewCell {
         artistNameLabel.text = viewModel.artistName
         numberOfTracksLabel.text = "Tracks: \(viewModel.numberOfTracks)"
         albumTypeLabel.text = "💽 \(viewModel.albumType.localizedCapitalized)"
-        albumCoverImageView.sd_setImage(with: viewModel.artworkURL, completed: nil)
+        albumCoverImageView.sd_setImage(with: viewModel.artworkURL, placeholderImage: UIImage(systemName: "opticaldisc"), options: .lowPriority, context: nil) //(with: viewModel.artworkURL, completed: nil)
     }
     
 }

@@ -13,7 +13,7 @@ class RecommendedTrackCollectionViewCell: UICollectionViewCell {
     
     private let albumCoverImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(systemName: "photo")
+        imageView.image = UIImage(systemName: "opticaldisc")
         imageView.contentMode = .scaleAspectFill
         return imageView
     }()
@@ -34,7 +34,7 @@ class RecommendedTrackCollectionViewCell: UICollectionViewCell {
     
     private let durationLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 14, weight: .regular)
+        label.font = .systemFont(ofSize: 10, weight: .regular)
         label.textAlignment = .right
         label.numberOfLines = 1
         return label
@@ -42,7 +42,7 @@ class RecommendedTrackCollectionViewCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        contentView.backgroundColor = .systemBackground//UIColor.mainColors.randomElement()?.withAlphaComponent(0.5)
+        contentView.backgroundColor = .systemBackground
         contentView.addSubview(albumCoverImageView)
         contentView.addSubview(trackNameLabel)
         contentView.addSubview(artistNameLabel)
@@ -78,12 +78,13 @@ class RecommendedTrackCollectionViewCell: UICollectionViewCell {
         trackNameLabel.text = nil
         artistNameLabel.text = nil
         albumCoverImageView.image = nil
+        durationLabel.text = nil
     }
     
     func configureViewModel(with viewModel: RecommendedTrackCellViewModel) {
         trackNameLabel.text = viewModel.name
         artistNameLabel.text = viewModel.artistName
-        albumCoverImageView.sd_setImage(with: viewModel.artworkURL, placeholderImage: UIImage(systemName: "opticaldisc"), options: .delayPlaceholder, completed: nil) //sd_setImage(with: viewModel.artworkURL, completed: nil)
+        albumCoverImageView.sd_setImage(with: viewModel.artworkURL, placeholderImage: UIImage(systemName: "opticaldisc"), options: .lowPriority, completed: nil) //sd_setImage(with: viewModel.artworkURL, completed: nil)
         let totalSeconds = (viewModel.duration/1000)
         let minutes = totalSeconds/60
         let seconds = totalSeconds%60
