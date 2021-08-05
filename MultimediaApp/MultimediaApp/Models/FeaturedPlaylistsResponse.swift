@@ -8,7 +8,7 @@
 import Foundation
 
 struct FeaturedPlaylistsResponse: Codable {
-    let message: String
+    let message: String?
     let playlists: PlaylistResponse
 }
 

@@ -41,6 +41,8 @@ class SearchViewController: UIViewController {
         return collectionView
     }()
     
+    private var categories: [CategoryItem] = []
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Search"
@@ -49,6 +51,7 @@ class SearchViewController: UIViewController {
         navigationItem.searchController = self.searchController
         navigationItem.hidesSearchBarWhenScrolling = true
         configureCollectionView()
+        fetchData()
     }
     
     override func viewDidLayoutSubviews() {
@@ -58,8 +61,8 @@ class SearchViewController: UIViewController {
     
     private func configureCollectionView() {
         view.addSubview(collectionView)
-        collectionView.register(GenreCollectionViewCell.self,
-                                forCellWithReuseIdentifier: GenreCollectionViewCell.identifier)
+        collectionView.register(CategoryCollectionViewCell.self,
+                                forCellWithReuseIdentifier: CategoryCollectionViewCell.identifier)
         collectionView.dataSource = self
         collectionView.delegate = self
         collectionView.backgroundColor = .systemBackground
@@ -83,13 +86,18 @@ extension SearchViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 16
+        return categories.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: GenreCollectionViewCell.identifier, for: indexPath) as? GenreCollectionViewCell else {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CategoryCollectionViewCell.identifier, for: indexPath) as? CategoryCollectionViewCell else {
             return UICollectionViewCell()
-        } 
+        }
+        cell.configureViewModel(with:
+            CategoryCollectionViewCellViewModel(
+                title: categories[indexPath.row].name,
+                artworkURL: URL(
+                    string: categories[indexPath.row].icons.first?.url ?? "")))
         return cell
     }
     
@@ -145,19 +153,13 @@ extension SearchViewController: UISearchResultsUpdating {
 
 extension SearchViewController {
     
-    private func fetchRecommendedGenres() {
+    private func fetchData() {
         Logger.log(object: Self.self, method: #function)
-        APICaller.shared.getRecommendedGenres { [weak self] result in
+        APICaller.shared.getAllCategories { [weak self] result in
             DispatchQueue.global(qos: .default).async {
                 switch result {
-                case .success(let model):
-                    let genres = model.genres
-                    var seeds = Set<String>()
-                    while seeds.count <= 4 {
-                        if let random = genres.randomElement() {
-                            seeds.insert(random)
-                        }
-                    }
+                case .success(let categories):
+                    self?.categories = categories
                     self?.updateUI()
                     break
                 case .failure(let error):
@@ -168,6 +170,33 @@ extension SearchViewController {
         }
     }
     
+    private func fetchCategory(with item: CategoryItem) {
+        APICaller.shared.getCategory(category: item) { [weak self] result in
+            DispatchQueue.global(qos: .default).async {
+                switch result {
+                case .success(let model):
+                    break
+                case .failure(let error):
+                    Logger.log(object: Self.self, method: #function, message: "", body: error.localizedDescription, clarification: nil)
+                    break
+                }
+            }
+        }
+    }
+    
+    private func fetchCategoryPlaylists(for category: CategoryItem) {
+        APICaller.shared.getCategoryPlaylists(for: category) { [weak self] result in
+            DispatchQueue.global(qos: .default).async {
+                switch result {
+                case .success(let model):
+                    break
+                case .failure(let error):
+                    Logger.log(object: Self.self, method: #function, message: "", body: error.localizedDescription, clarification: nil)
+                    break
+                }
+            }
+        }
+    }
     
 }
 

@@ -1,20 +1,21 @@
 //
-//  GenreCollectionViewCell.swift
+//  CategoryCollectionViewCell.swift
 //  MultimediaApp
 //
 //  Created by developer on 05.08.2021.
 //
 
 import UIKit
+import SDWebImage
 
-class GenreCollectionViewCell: UICollectionViewCell {
+class CategoryCollectionViewCell: UICollectionViewCell {
     
-    static let identifier = "GenreCollectionViewCell"
+    static let identifier = "CategoryCollectionViewCell"
     
     private let coverImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "music.mic")
-        imageView.tintColor = .white
+        imageView.tintColor = .secondaryLabel
         imageView.contentMode = .scaleAspectFit
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = 10
@@ -23,9 +24,9 @@ class GenreCollectionViewCell: UICollectionViewCell {
     
     private let nameLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 22, weight: .semibold)
-        label.textColor = .white
-        label.text = "Genre"
+        label.font = .systemFont(ofSize: 18, weight: .semibold)
+        label.textColor = .label
+        label.text = "Category"
         label.numberOfLines = 2
         return label
     }()
@@ -62,9 +63,9 @@ class GenreCollectionViewCell: UICollectionViewCell {
         coverImageView.image = nil
     }
     
-    func configureViewModel(with viewModel: NewReleasesCellViewModel) {
-        nameLabel.text = viewModel.name
-        coverImageView.sd_setImage(with: viewModel.artworkURL, placeholderImage: UIImage(systemName: "music.mic"), options: .lowPriority, context: nil) //(with: viewModel.artworkURL, completed: nil)
+    func configureViewModel(with viewModel: CategoryCollectionViewCellViewModel) {
+        nameLabel.text = viewModel.title
+        coverImageView.sd_setImage(with: viewModel.artworkURL, placeholderImage: UIImage(systemName: "music.mic"), options: .lowPriority, context: nil)
     }
     
     

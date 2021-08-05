@@ -113,6 +113,67 @@ final class APICaller {
         }
     }
     
+    public func getAllCategories(completion: @escaping (Result<[CategoryItem], Error>) -> Void) {
+        createRequest(with: URL(string: Constants.baseAPIURL + "/browse/categories?country=RU&limit=50"),
+                      type: .GET) { request in
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                guard let data = data, error == nil else {
+                    completion(.failure(APIError.failedToGetDate))
+                    return
+                }
+                do {
+                    let result = try JSONDecoder().decode(AllCategoriesResponse.self, from: data)
+//                    Logger.log(object: Self.self, method: #function, message: "Got All-Categories model:", body: result, clarification: nil)
+                    completion(.success(result.categories.items))
+                } catch {
+                    completion(.failure(error))
+                }
+            }
+            task.resume()
+        }
+    }
+    
+    public func getCategory(category: CategoryItem, completion: @escaping (Result<CategoryItem, Error>) -> Void) {
+        createRequest(with: URL(string: Constants.baseAPIURL + "/browse/categories/\(category.id)"),
+                      type: .GET) { request in
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                guard let data = data, error == nil else {
+                    completion(.failure(APIError.failedToGetDate))
+                    return
+                }
+                do {
+                    let result = try JSONDecoder().decode(CategoryItem.self, from: data)
+                    completion(.success(result))
+                } catch {
+                    Logger.log(object: Self.self, method: #function, message: "API CALLER ERROR:", body: error, clarification: nil)
+                    completion(.failure(error))
+                }
+            }
+            task.resume()
+        }
+    }
+    
+    public func getCategoryPlaylists(for category: CategoryItem, completion: @escaping (Result<[Playlist], Error>) -> Void) {
+        createRequest(with: URL(string: Constants.baseAPIURL + "/browse/categories/\(category.id)/playlists?country=RU&limit=50"),
+                      type: .GET) { request in
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                guard let data = data, error == nil else {
+                    completion(.failure(APIError.failedToGetDate))
+                    return
+                }
+                do {
+                    let result = try JSONDecoder().decode(FeaturedPlaylistsResponse.self, from: data)
+//                    Logger.log(object: Self.self, method: #function, message: "Got Category's-Playlists model:", body: result, clarification: nil)
+                    completion(.success(result.playlists.items))
+                } catch {
+                    Logger.log(object: Self.self, method: #function, message: "API CALLER ERROR:", body: error, clarification: nil)
+                    completion(.failure(error))
+                }
+            }
+            task.resume()
+        }
+    }
+    
     public func getRecommendations(genres: Set<String> , completion: @escaping (Result<RecommendationsResponse, Error>) -> Void) {
         let seeds = genres.joined(separator: ",")
         createRequest(with: URL(string: Constants.baseAPIURL + "/recommendations?seed_genres=\(seeds)&limit=50"),
