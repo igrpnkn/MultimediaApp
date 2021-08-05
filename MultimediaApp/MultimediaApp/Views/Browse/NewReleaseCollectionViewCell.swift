@@ -51,7 +51,7 @@ class NewReleaseCollectionViewCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        contentView.backgroundColor = UIColor.mainColors.randomElement()?.withAlphaComponent(0.5)
+        contentView.backgroundColor = UIColor.mainColors.randomElement()?.withAlphaComponent(0.8)
         contentView.clipsToBounds = true
         contentView.addSubview(albumCoverImageView)
         contentView.addSubview(albumNameLabel)

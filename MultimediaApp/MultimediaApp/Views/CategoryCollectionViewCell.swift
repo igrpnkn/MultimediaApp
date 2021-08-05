@@ -16,15 +16,15 @@ class CategoryCollectionViewCell: UICollectionViewCell {
         let imageView = UIImageView()
         imageView.image = UIImage(systemName: "music.mic")
         imageView.tintColor = .secondaryLabel
-        imageView.contentMode = .scaleAspectFit
-        imageView.clipsToBounds = true
-        imageView.layer.cornerRadius = 10
+        imageView.contentMode = .scaleAspectFill
+//        imageView.clipsToBounds = true
+//        imageView.layer.cornerRadius = 10
         return imageView
     }()
     
     private let nameLabel: UILabel = {
         let label = UILabel()
-        label.font = .systemFont(ofSize: 18, weight: .semibold)
+        label.font = .systemFont(ofSize: 15, weight: .semibold)
         label.textColor = .label
         label.text = "Category"
         label.numberOfLines = 2
@@ -47,14 +47,16 @@ class CategoryCollectionViewCell: UICollectionViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         contentView.layer.cornerRadius = 12
-        coverImageView.frame = CGRect(x: contentView.width/2,
-                                      y: 5,
-                                      width: contentView.width/2,
-                                      height: contentView.height-10)
+        let labelHeight: CGFloat = 40
+        let imageEdge: CGFloat = contentView.height-labelHeight
+        coverImageView.frame = CGRect(x: contentView.width-imageEdge-10,
+                                      y: 0,
+                                      width: imageEdge,
+                                      height: imageEdge)
         nameLabel.frame = CGRect(x: 10,
-                                 y: contentView.height/2,
+                                 y: contentView.bottom-labelHeight,
                                  width: contentView.width-20,
-                                 height: contentView.height/2)
+                                 height: labelHeight)
     }
     
     override func prepareForReuse() {
