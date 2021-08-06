@@ -24,7 +24,8 @@ class SearchResultsViewController: UIViewController {
     
     private let tableView: UITableView = {
         let tableView = UITableView(frame: .zero, style: .grouped)
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
+        tableView.register(SearchResultDefaultTableViewCell.self, forCellReuseIdentifier: SearchResultDefaultTableViewCell.identifier)
+        tableView.register(SearchResultSubtitledTableViewCell.self, forCellReuseIdentifier: SearchResultSubtitledTableViewCell.identifier)
         tableView.isHidden = true
         return tableView
     }()
@@ -92,32 +93,46 @@ extension SearchResultsViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let result = sections[indexPath.section].results[indexPath.row]
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
-        cell.tintColor = .spotifyGreen
-        cell.imageView?.contentMode = .scaleAspectFill
-        switch result {
+        switch sections[indexPath.section].results[indexPath.row] {
         case .artist(model: let model):
-            cell.imageView?.image = UIImage(systemName: "music.mic")
-            cell.textLabel?.text = model.name
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: SearchResultDefaultTableViewCell.identifier,
+                                                           for: indexPath) as? SearchResultDefaultTableViewCell else {
+                return UITableViewCell()
+            }
+            let viewModel = SearchResultDefaultTableViewCellViewModel(title: model.name,
+                                                                      arkworkURL: URL(string: model.images?.first?.url ?? ""))
+            cell.configure(with: viewModel)
+            return cell
         case .album(model: let model):
-            cell.imageView?.sd_setImage(with: URL(string: model.images.first?.url ?? ""),
-                                        placeholderImage: UIImage(systemName: "opticaldisc"),
-                                        options: .lowPriority, completed: nil)
-            cell.textLabel?.text = model.name
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: SearchResultSubtitledTableViewCell.identifier,
+                                                           for: indexPath) as? SearchResultSubtitledTableViewCell else {
+                return UITableViewCell()
+            }
+            let viewModel = SearchResultSubtitledTableViewCellViewModel(title: model.name,
+                                                                        subtitle: model.album_type,
+                                                                        arkworkURL: URL(string: model.images.first?.url ?? ""))
+            cell.configure(with: viewModel)
+            return cell
         case .playlist(model: let model):
-            cell.imageView?.sd_setImage(with: URL(string: model.images.first?.url ?? ""),
-                                        placeholderImage: UIImage(systemName: "music.note.list"),
-                                        options: .lowPriority, completed: nil)
-            cell.textLabel?.text = model.name
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: SearchResultDefaultTableViewCell.identifier,
+                                                           for: indexPath) as? SearchResultDefaultTableViewCell else {
+                return UITableViewCell()
+            }
+            let viewModel = SearchResultDefaultTableViewCellViewModel(title: model.name,
+                                                                      arkworkURL: URL(string: model.images.first?.url ?? ""))
+            cell.configure(with: viewModel)
+            return cell
         case .track(model: let model):
-            cell.imageView?.sd_setImage(with: URL(string: model.album?.images.first?.url ?? ""),
-                                        placeholderImage: UIImage(systemName: "music.note"),
-                                        options: .lowPriority,
-                                        completed: nil)
-            cell.textLabel?.text = model.name
+            guard let cell = tableView.dequeueReusableCell(withIdentifier: SearchResultSubtitledTableViewCell.identifier,
+                                                           for: indexPath) as? SearchResultSubtitledTableViewCell else {
+                return UITableViewCell()
+            }
+            let viewModel = SearchResultSubtitledTableViewCellViewModel(title: model.name,
+                                                                        subtitle: model.artists.first?.name ?? "Unknown",
+                                                                        arkworkURL: URL(string: model.album?.images.first?.url ?? ""))
+            cell.configure(with: viewModel)
+            return cell
         }
-        return cell
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {

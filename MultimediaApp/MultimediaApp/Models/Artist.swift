@@ -10,6 +10,7 @@ import Foundation
 struct Artist: Codable {
     let id: String
     let external_urls: UserExternalURLS
+    let images: [APIImage]?
     let href: String
     let name: String
     let type: String

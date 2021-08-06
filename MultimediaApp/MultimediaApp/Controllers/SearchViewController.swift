@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SafariServices
 
 class SearchViewController: UIViewController {
     
@@ -120,9 +121,16 @@ extension SearchViewController: UICollectionViewDelegate {
 // MARK: - Search Results
 
 extension SearchViewController: UISearchResultsUpdating, UISearchBarDelegate, SearchResultsViewControllerDelegate {
+    
     func didTapResult(_ result: SearchResult) {
         switch result {
         case .artist(model: let artist):
+            Logger.log(object: Self.self, method: #function, message: "Clicked \(artist.name)", body: artist.external_urls, clarification: nil)
+            guard let url = URL(string: artist.external_urls.spotify ?? "") else {
+                return
+            }
+            let sfVC = SFSafariViewController(url: url)
+            present(sfVC, animated: true, completion: nil)
             break
         case .album(model: let album):
             let vc = AlbumViewController(with: album)
@@ -131,6 +139,12 @@ extension SearchViewController: UISearchResultsUpdating, UISearchBarDelegate, Se
             let vc = PlaylistViewController(with: playlist)
             navigationController?.pushViewController(vc, animated: true)
         case .track(model: let track):
+            Logger.log(object: Self.self, method: #function, message: "Clicked \(track.name)", body: track.external_urls, clarification: nil)
+            guard let url = URL(string: track.external_urls.spotify ?? "") else {
+                return
+            }
+            let sfVC = SFSafariViewController(url: url)
+            present(sfVC, animated: true, completion: nil)
             break
         }
     }
