@@ -48,6 +48,7 @@ class SearchViewController: UIViewController {
         title = "Search"
         view.backgroundColor = .systemBackground
         searchController.searchResultsUpdater = self
+        searchController.searchBar.delegate = self
         navigationItem.searchController = self.searchController
         navigationItem.hidesSearchBarWhenScrolling = true
         configureCollectionView()
@@ -118,21 +119,51 @@ extension SearchViewController: UICollectionViewDelegate {
 
 // MARK: - Search Results
 
-extension SearchViewController: UISearchResultsUpdating {
+extension SearchViewController: UISearchResultsUpdating, UISearchBarDelegate, SearchResultsViewControllerDelegate {
+    func didTapResult(_ result: SearchResult) {
+        switch result {
+        case .artist(model: let artist):
+            break
+        case .album(model: let album):
+            let vc = AlbumViewController(with: album)
+            navigationController?.pushViewController(vc, animated: true)
+        case .playlist(model: let playlist):
+            let vc = PlaylistViewController(with: playlist)
+            navigationController?.pushViewController(vc, animated: true)
+        case .track(model: let track):
+            break
+        }
+    }
     
     func updateSearchResults(for searchController: UISearchController) {
-        guard let resultsController = searchController.searchResultsController as? SearchResultsViewController,
-              let query = searchController.searchBar.text,
-              !query.trimmingCharacters(in: .whitespaces).isEmpty else {
-            return
-        }
-        Logger.log(object: Self.self, method: #function, message: "Searching query: \(query )")
-        // TODO: searching
-//        resultsController.updateSearch(with: query)
         
     }
     
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        guard let resultsController = searchController.searchResultsController as? SearchResultsViewController,
+              let query = searchBar.text,
+              query.count >= 3,
+              !query.trimmingCharacters(in: .whitespaces).isEmpty else {
+            return
+        }
+        resultsController.delegate = self
+        Logger.log(object: Self.self, method: #function, message: "Searching query: \(query )")
+        APICaller.shared.search(with: query) { result in
+            DispatchQueue.global(qos: .default).async {
+                switch result {
+                case .success(let results):
+                    resultsController.update(with: results)
+                    break
+                case .failure(let error):
+                    Logger.log(object: Self.self, method: #function, message: "❌❌❌", body: error, clarification: nil)
+                    break
+                }
+            }
+        }
+    }
+    
 }
+
 
 // MARK: - Fetching Data from API
 
@@ -154,21 +185,7 @@ extension SearchViewController {
             }
         }
     }
-    
-    private func fetchCategory(with item: CategoryItem) {
-        APICaller.shared.getCategory(category: item) { [weak self] result in
-            DispatchQueue.global(qos: .default).async {
-                switch result {
-                case .success(let model):
-                    break
-                case .failure(let error):
-                    Logger.log(object: Self.self, method: #function, message: "", body: error.localizedDescription, clarification: nil)
-                    break
-                }
-            }
-        }
-    }
-    
+
     private func fetchCategoryPlaylists(for category: CategoryItem) {
         APICaller.shared.getCategoryPlaylists(for: category) { [weak self] result in
             DispatchQueue.global(qos: .default).async {
