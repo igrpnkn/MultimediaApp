@@ -106,29 +106,14 @@ extension SearchViewController: UICollectionViewDataSource {
 // MARK: - CollectionView Delegate
 
 extension SearchViewController: UICollectionViewDelegate {
-    /*
+    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
-        let section = sections[indexPath.section]
-        switch section {
-        case .newReleases:
-            let vc = AlbumViewController(with: newAlbums[indexPath.row])
-            vc.navigationItem.largeTitleDisplayMode = .always
-            navigationController?.pushViewController(vc, animated: true)
-            break
-        case .featuredPlaylists:
-            let vc = PlaylistViewController(with: playlists[indexPath.row])
-            vc.navigationItem.largeTitleDisplayMode = .always
-            navigationController?.pushViewController(vc, animated: true)
-            break
-        case .recommendedTracks:
-//            let vc = PlaylistViewController(with: playlists[indexPath.row])
-//            vc.navigationItem.largeTitleDisplayMode = .always
-//            navigationController?.pushViewController(vc, animated: true)
-            break
-        }
+        let vc = CategoryViewController(category: categories[indexPath.row])
+        vc.navigationItem.largeTitleDisplayMode = .always
+        navigationController?.pushViewController(vc, animated: true)
     }
-    */
+    
 }
 
 // MARK: - Search Results
