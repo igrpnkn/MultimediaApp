@@ -344,9 +344,7 @@ extension HomeViewController: UICollectionViewDelegate {
             navigationController?.pushViewController(vc, animated: true)
             break
         case .recommendedTracks:
-//            let vc = PlaylistViewController(with: playlists[indexPath.row])
-//            vc.navigationItem.largeTitleDisplayMode = .always
-//            navigationController?.pushViewController(vc, animated: true)
+            PlaybackPresenter.startPlayback(form: self, track: tracks[indexPath.row])
             break
         }
     }

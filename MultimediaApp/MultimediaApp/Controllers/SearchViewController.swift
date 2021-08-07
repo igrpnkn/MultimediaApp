@@ -139,12 +139,7 @@ extension SearchViewController: UISearchResultsUpdating, UISearchBarDelegate, Se
             let vc = PlaylistViewController(with: playlist)
             navigationController?.pushViewController(vc, animated: true)
         case .track(model: let track):
-            Logger.log(object: Self.self, method: #function, message: "Clicked \(track.name)", body: track.external_urls, clarification: nil)
-            guard let url = URL(string: track.external_urls.spotify ?? "") else {
-                return
-            }
-            let sfVC = SFSafariViewController(url: url)
-            present(sfVC, animated: true, completion: nil)
+            PlaybackPresenter.startPlayback(form: self, track: track)
             break
         }
     }

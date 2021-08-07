@@ -11,6 +11,8 @@ class PlaylistViewController: UIViewController {
  
     private let playlist: Playlist
     
+    private var tracks: [AudioTrack] = []
+    
     private var recommendedTracksViewModels = [RecommendedTrackCellViewModel]()
     
     private let collectionView: UICollectionView = {
@@ -102,12 +104,14 @@ extension PlaylistViewController {
     private func fetchData() {
         Logger.log(object: Self.self, method: #function)
         DispatchQueue.global(qos: .default).async {
+            self.tracks = []
             APICaller.shared.getPlaylistDetails(for: self.playlist) { [weak self] (result) in
                 switch result {
                 case .success(let model):
                     if let tracks = model.tracks.items {
                         self?.recommendedTracksViewModels = tracks.compactMap({
-                            RecommendedTrackCellViewModel(name: $0.track.name,
+                            self?.tracks.append($0.track)
+                            return RecommendedTrackCellViewModel(name: $0.track.name,
                                                           artistName: $0.track.artists.first?.name ?? "Unknown",
                                                           artworkURL: URL(string: $0.track.album?.images.first?.url ?? ""),
                                                           duration: $0.track.duration_ms)
@@ -168,9 +172,8 @@ extension PlaylistViewController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
-        if let cell = collectionView.cellForItem(at: indexPath) as? RecommendedTrackCollectionViewCell {
-            cell.contentView.backgroundColor = UIColor.mainColors.randomElement()
-        }
+        PlaybackPresenter.startPlayback(form: self,
+                                        track: self.tracks[indexPath.row])
     }
     
 }
@@ -179,7 +182,7 @@ extension PlaylistViewController: PlaylistHeaderCollectionReusableViewDelegate {
     
     func PlaylistHeaderCollectionReusableViewDidTapPlayAll(_ header: PlaylistHeaderCollectionReusableView) {
         Logger.log(object: Self.self, method: #function, message: "Start playling playlist: \(playlist.name)")
-        // TODO: start playing playlist in queue
+        PlaybackPresenter.startPlayback(form: self, tracks: self.tracks)
     }
     
 }

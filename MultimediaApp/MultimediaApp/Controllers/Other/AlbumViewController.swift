@@ -11,6 +11,8 @@ class AlbumViewController: UIViewController {
     
     private let album: Album
     
+    private var tracks: [AudioTrack] = []
+    
     private var viewModels = [RecommendedTrackCellViewModel]()
     
     private let collectionView: UICollectionView = {
@@ -103,11 +105,13 @@ extension AlbumViewController {
     private func fetchData() {
         Logger.log(object: Self.self, method: #function)
         DispatchQueue.global(qos: .default).async {
+            self.tracks = []
             APICaller.shared.getAlbumDetails(for: self.album) { [weak self] (result) in
                 switch result {
                 case .success(let model):
                     self?.viewModels = model.tracks.items.compactMap({
-                        RecommendedTrackCellViewModel(name: $0.name,
+                        self?.tracks.append($0)
+                        return RecommendedTrackCellViewModel(name: $0.name,
                                                       artistName: $0.artists.first?.name ?? "Unknown",
                                                       artworkURL: URL(string: model.images.first?.url ?? ""),
                                                       duration: $0.duration_ms)
@@ -166,9 +170,7 @@ extension AlbumViewController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
-        if let cell = collectionView.cellForItem(at: indexPath) as? RecommendedTrackCollectionViewCell {
-            cell.contentView.backgroundColor = UIColor.mainColors.randomElement()
-        }
+        PlaybackPresenter.startPlayback(form: self, track: self.tracks[indexPath.row])
     }
     
 }
@@ -177,7 +179,7 @@ extension AlbumViewController: PlaylistHeaderCollectionReusableViewDelegate {
     
     func PlaylistHeaderCollectionReusableViewDidTapPlayAll(_ header: PlaylistHeaderCollectionReusableView) {
         Logger.log(object: Self.self, method: #function, message: "Start playling playlist: \(album.name)")
-        // TODO: start playing playlist in queue
+        PlaybackPresenter.startPlayback(form: self, tracks: self.tracks)
     }
     
 }
