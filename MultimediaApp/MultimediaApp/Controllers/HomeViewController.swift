@@ -344,7 +344,7 @@ extension HomeViewController: UICollectionViewDelegate {
             navigationController?.pushViewController(vc, animated: true)
             break
         case .recommendedTracks:
-            PlaybackPresenter.startPlayback(form: self, track: tracks[indexPath.row])
+            PlaybackPresenter.shared.startPlayback(form: self, track: tracks[indexPath.row])
             break
         }
     }

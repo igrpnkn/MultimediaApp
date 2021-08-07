@@ -139,7 +139,7 @@ extension SearchViewController: UISearchResultsUpdating, UISearchBarDelegate, Se
             let vc = PlaylistViewController(with: playlist)
             navigationController?.pushViewController(vc, animated: true)
         case .track(model: let track):
-            PlaybackPresenter.startPlayback(form: self, track: track)
+            PlaybackPresenter.shared.startPlayback(form: self, track: track)
             break
         }
     }
