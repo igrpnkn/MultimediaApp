@@ -13,8 +13,11 @@ final class PlaybackPresenter {
     
     static let shared = PlaybackPresenter()
     
+    var playerVC: PlayerViewController?
     var player: AVPlayer?
     var playerQueue: AVQueuePlayer?
+    
+    var index: Int = 0
     
     private var track: AudioTrack?
     private var tracks: [AudioTrack] = []
@@ -22,14 +25,7 @@ final class PlaybackPresenter {
     var currentTrack: AudioTrack? {
         if let track = self.track, self.tracks.isEmpty {
             return track
-        } else if let player = playerQueue, !self.tracks.isEmpty {
-            let item = player.currentItem
-            let items = player.items()
-            guard let index = items.firstIndex(where: {
-                $0 == item
-            }) else {
-                return nil
-            }
+        } else if let _ = playerQueue, !self.tracks.isEmpty {
             return tracks[index]
         }
         return nil
@@ -57,6 +53,7 @@ final class PlaybackPresenter {
         viewController.present(navController, animated: true) { [weak self] in
             self?.player?.play()
         }
+        self.playerVC = vc
     }
     
     func startPlayback(form viewController: UIViewController, tracks: [AudioTrack]) {
@@ -80,6 +77,7 @@ final class PlaybackPresenter {
         viewController.present(navController, animated: true) { [weak self] in
             self?.playerQueue?.play()
         }
+        self.playerVC = vc
     }
     
     func showHasNoPreview(from viewController: UIViewController) {
@@ -127,6 +125,8 @@ extension PlaybackPresenter: PlayerViewControllerDelegate {
             player?.pause()
         } else if let player = playerQueue {
             player.advanceToNextItem()
+            self.index += 1
+            playerVC?.refreshUI()
         }
     }
     

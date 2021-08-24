@@ -78,6 +78,10 @@ class PlayerViewController: UIViewController {
                                                                 subtitle: dataSource?.subtitle))
     }
     
+    public func refreshUI() {
+        configure()
+    }
+    
     @objc
     private func didTapClose() {
         dismiss(animated: true, completion: nil)

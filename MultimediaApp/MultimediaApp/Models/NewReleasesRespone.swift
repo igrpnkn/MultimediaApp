@@ -28,7 +28,7 @@ struct Album: Codable {
     let available_markets: [String]
     let external_urls: UserExternalURLS
     let href: String
-    let images: [APIImage]
+    var images: [APIImage]
     let name: String
     let release_date: String
     let release_date_precision: String

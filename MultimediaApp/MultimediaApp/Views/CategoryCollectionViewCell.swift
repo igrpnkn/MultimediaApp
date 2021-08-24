@@ -67,6 +67,7 @@ class CategoryCollectionViewCell: UICollectionViewCell {
     
     func configureViewModel(with viewModel: CategoryCollectionViewCellViewModel) {
         nameLabel.text = viewModel.title
+        
         coverImageView.sd_setImage(with: viewModel.artworkURL, placeholderImage: UIImage(systemName: "music.mic"), options: .lowPriority, context: nil)
     }
     
