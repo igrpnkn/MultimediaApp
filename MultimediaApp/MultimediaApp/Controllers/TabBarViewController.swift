@@ -39,12 +39,13 @@ class TabBarViewController: UITabBarController {
         nav1.navigationBar.tintColor = .spotifyGreen
         nav2.navigationBar.tintColor = .spotifyGreen
         
-        nav0.tabBarItem = UITabBarItem(title: "Browse", image: UIImage(systemName: "house.circle"), tag: 1)
-        nav0.tabBarItem.selectedImage = UIImage(systemName: "house.circle.fill")
-        nav1.tabBarItem = UITabBarItem(title: "Search", image: UIImage(systemName: "magnifyingglass.circle"), tag: 1)
-        nav1.tabBarItem.selectedImage = UIImage(systemName: "magnifyingglass.circle.fill")
-        nav2.tabBarItem = UITabBarItem(title: "Library", image: UIImage(systemName: "book.circle"), tag: 1)
-        nav2.tabBarItem.selectedImage = UIImage(systemName: "book.circle.fill")
+        let imageConf = UIImage.SymbolConfiguration(pointSize: 22, weight: .medium)
+        nav0.tabBarItem = UITabBarItem(title: "Browse", image: UIImage(systemName: "house.circle", withConfiguration: imageConf), tag: 1)
+        nav0.tabBarItem.selectedImage = UIImage(systemName: "house.circle.fill", withConfiguration: imageConf)
+        nav1.tabBarItem = UITabBarItem(title: "Search", image: UIImage(systemName: "magnifyingglass.circle", withConfiguration: imageConf), tag: 1)
+        nav1.tabBarItem.selectedImage = UIImage(systemName: "magnifyingglass.circle.fill", withConfiguration: imageConf)
+        nav2.tabBarItem = UITabBarItem(title: "Library", image: UIImage(systemName: "book.circle", withConfiguration: imageConf), tag: 1)
+        nav2.tabBarItem.selectedImage = UIImage(systemName: "book.circle.fill", withConfiguration: imageConf)
         
         self.setViewControllers([nav0, nav1, nav2], animated: false)
     }
