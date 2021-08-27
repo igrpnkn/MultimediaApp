@@ -69,6 +69,8 @@
 		8B69495026D520BF00F3AEF8 /* LibraryPlaylistsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B69494F26D520BF00F3AEF8 /* LibraryPlaylistsViewController.swift */; };
 		8B69495326D520FB00F3AEF8 /* LibraryAlbumsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B69495226D520FB00F3AEF8 /* LibraryAlbumsViewController.swift */; };
 		8B69495626D52DE800F3AEF8 /* LibraryToggleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B69495526D52DE800F3AEF8 /* LibraryToggleView.swift */; };
+		8B69495926D7F32B00F3AEF8 /* LibraryPlaylistsResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B69495826D7F32B00F3AEF8 /* LibraryPlaylistsResponse.swift */; };
+		8B69495C26D8CED800F3AEF8 /* ActionLabelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B69495B26D8CED800F3AEF8 /* ActionLabelView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -136,6 +138,8 @@
 		8B69494F26D520BF00F3AEF8 /* LibraryPlaylistsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryPlaylistsViewController.swift; sourceTree = "<group>"; };
 		8B69495226D520FB00F3AEF8 /* LibraryAlbumsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryAlbumsViewController.swift; sourceTree = "<group>"; };
 		8B69495526D52DE800F3AEF8 /* LibraryToggleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryToggleView.swift; sourceTree = "<group>"; };
+		8B69495826D7F32B00F3AEF8 /* LibraryPlaylistsResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryPlaylistsResponse.swift; sourceTree = "<group>"; };
+		8B69495B26D8CED800F3AEF8 /* ActionLabelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionLabelView.swift; sourceTree = "<group>"; };
 		ABA1995835CDC14F5511639D /* Pods-MultimediaApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MultimediaApp.release.xcconfig"; path = "Target Support Files/Pods-MultimediaApp/Pods-MultimediaApp.release.xcconfig"; sourceTree = "<group>"; };
 		B77649A6DA5A2A6DB074FD38 /* Pods-MultimediaApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MultimediaApp.debug.xcconfig"; path = "Target Support Files/Pods-MultimediaApp/Pods-MultimediaApp.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -253,6 +257,7 @@
 				8B402A2E26BC3BF5009066E8 /* CategoryCollectionViewCell.swift */,
 				3A5C579B26BEB94D00F42FC1 /* PlayerControlsView.swift */,
 				8B69495526D52DE800F3AEF8 /* LibraryToggleView.swift */,
+				8B69495B26D8CED800F3AEF8 /* ActionLabelView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -290,6 +295,7 @@
 				8B402A3126BC4ECC009066E8 /* AllCategoriesResponse.swift */,
 				8B402A3B26BD5B9D009066E8 /* SearchResultResponse.swift */,
 				8B402A3E26BD5F34009066E8 /* SearchResult.swift */,
+				8B69495826D7F32B00F3AEF8 /* LibraryPlaylistsResponse.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -483,6 +489,7 @@
 				8B3CABFC263BFFD00090D9F6 /* SearchResultsViewController.swift in Sources */,
 				8B3CABEC263BFF1E0090D9F6 /* WelcomeViewController.swift in Sources */,
 				8B3CABF2263BFF600090D9F6 /* ProfileViewController.swift in Sources */,
+				8B69495C26D8CED800F3AEF8 /* ActionLabelView.swift in Sources */,
 				8B4029CD26B2A61D009066E8 /* Logger.swift in Sources */,
 				8B3CABDD263BFD8F0090D9F6 /* HomeViewController.swift in Sources */,
 				8B4029D226B2DDAC009066E8 /* SettingsModels.swift in Sources */,
@@ -515,6 +522,7 @@
 				3AB2C15026B34F550026220B /* NewReleasesRespone.swift in Sources */,
 				3A5C579726BDC49800F42FC1 /* SearchResultSubtitledTableViewCellViewModel.swift in Sources */,
 				8B402A3226BC4ECC009066E8 /* AllCategoriesResponse.swift in Sources */,
+				8B69495926D7F32B00F3AEF8 /* LibraryPlaylistsResponse.swift in Sources */,
 				8B402A2126BADEEE009066E8 /* PlaylistHeaderCollectionReusableViewViewModel.swift in Sources */,
 				8B402A3F26BD5F34009066E8 /* SearchResult.swift in Sources */,
 				8B402A0F26B82B78009066E8 /* NewReleasesCellViewModel.swift in Sources */,
