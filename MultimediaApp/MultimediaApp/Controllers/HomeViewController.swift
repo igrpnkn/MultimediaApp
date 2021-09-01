@@ -59,6 +59,7 @@ class HomeViewController: UIViewController {
         configureCollectionView()
         view.addSubview(activityIndicator)
         fetchData()
+        addLongTapGesture()
     }
     
     override func viewDidLayoutSubviews() {
@@ -116,6 +117,46 @@ class HomeViewController: UIViewController {
             label.center = self.view.center
         }
     }
+    
+}
+
+// MARK: - Gesture Recognizing
+
+extension HomeViewController {
+    
+    private func addLongTapGesture() {
+        let gesture = UILongPressGestureRecognizer(target: self, action: #selector(didLongPress(_:)))
+        collectionView.addGestureRecognizer(gesture)
+    }
+    
+    @objc
+    private func didLongPress(_ gesture: UILongPressGestureRecognizer) {
+        Logger.log(object: Self.self, method: #function)
+        guard gesture.state == .began else {
+            return
+        }
+        let touchPoint = gesture.location(in: collectionView)
+        guard let indexPath = collectionView.indexPathForItem(at: touchPoint) else {
+            Logger.log(object: Self.self, method: #function, message: "Failed to get IndexPath for long pressed Item :(")
+            return
+        }
+        if indexPath.section == 2 {
+            let model = tracks[indexPath.row]
+            let actionSheet = UIAlertController(title: model.name, message: "Would you like to add track to playlist?", preferredStyle: .actionSheet)
+            actionSheet.addAction(UIAlertAction(title: "Add to Playlist", style: .default, handler: { [weak self] _ in
+                let vc = LibraryPlaylistsViewController()
+                vc.selectionHandler = { [weak self] playlist in
+                    Logger.log(object: Self.self, method: #function)
+                    self?.pushAdd(track: self?.tracks[indexPath.row],
+                                  to: playlist)
+                }
+                self?.present(vc, animated: true, completion: nil)
+            }))
+            actionSheet.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+            present(actionSheet, animated: true, completion: nil)
+        }
+    }
+    
 }
 
 // MARK: - CollectionView CollectionLayoutSection
@@ -549,5 +590,67 @@ extension HomeViewController {
         }
     }
     
+    private func pushAdd(track audioTrack: AudioTrack?, to playlist: Playlist) {
+        guard audioTrack != nil else {
+            Logger.log(object: Self.self, method: #function, message: "Failed to submit Track to APICaller :(")
+            return
+        }
+        APICaller.shared.addTrackToPlaylist(track: audioTrack!, playlist: playlist) { result in
+            // TODO: - ⛔️ Rewrite this shit later more clean
+            DispatchQueue.main.async {
+                switch result {
+                case .success(_):
+                    let actionLabel = ActionLabelView()
+                    actionLabel.delegate = self
+                    actionLabel.frame = CGRect(x: 0, y: 0, width: 250, height: 250)
+                    actionLabel.center = self.view.center
+                    actionLabel.configure(with:
+                        ActionLabelViewViewModel(text: "Track has been added successfully!",
+                                                 actionTitle: "OK"))
+                    actionLabel.layer.opacity = 0.1
+                    self.view.addSubview(actionLabel)
+                    actionLabel.isHidden = false
+                    UIView.animate(withDuration: 0.5) {
+                        actionLabel.layer.opacity = 1
+                    }
+                case .failure(let error):
+                    Logger.log(object: Self.self, method: #function,
+                               message: "Error while adding Track to Playlist",
+                               body: error.localizedDescription,
+                               clarification: nil)
+                    let actionLabel = ActionLabelView()
+                    actionLabel.delegate = self
+                    actionLabel.frame = CGRect(x: 0, y: 0, width: 250, height: 250)
+                    actionLabel.center = self.view.center
+                    actionLabel.configure(with:
+                        ActionLabelViewViewModel(text: "Failed to add :(",
+                                                 actionTitle: "OK"))
+                    actionLabel.layer.opacity = 0.8
+                    actionLabel.isHidden = true
+                    self.view.addSubview(actionLabel)
+                    UIView.animate(withDuration: 1) {
+                        actionLabel.isHidden = false
+                        actionLabel.frame = CGRect(x: 0, y: 0, width: 250, height: 250)
+                        actionLabel.center = self.view.center
+                    }
+                }
+            }
+            
+        }
+    }
+    
 }
     
+extension HomeViewController: ActionLabelViewDelegate {
+    func actionLabelViewDidTapButton(_ actionLabelView: ActionLabelView) {
+        Logger.log(object: Self.self, method: #function)
+        UIView.animate(withDuration: 0.3,
+                       delay: 0,
+                       options: .curveEaseOut) {
+            actionLabelView.transform = CGAffineTransform(a: 0.1, b: 0, c: 0, d: 0.1, tx: 0, ty: 0)
+            actionLabelView.layer.opacity = 0.1
+        } completion: { _ in
+            actionLabelView.removeFromSuperview()
+        }
+    }
+}

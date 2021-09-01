@@ -15,7 +15,7 @@ class LibraryViewController: UIViewController {
     private let scrollView: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.isPagingEnabled = true
-        scrollView.backgroundColor = .systemYellow
+        scrollView.backgroundColor = .secondarySystemBackground
         scrollView.showsHorizontalScrollIndicator = false
         return scrollView
     }()

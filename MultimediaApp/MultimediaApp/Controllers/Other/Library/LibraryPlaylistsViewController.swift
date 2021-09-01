@@ -9,6 +9,25 @@ import UIKit
 
 class LibraryPlaylistsViewController: UIViewController {
     
+    public var selectionHandler: ((Playlist) -> Void)?
+    override var view: UIView! {
+        didSet {
+            if (selectionHandler != nil) {
+                let button = UIButton(frame: CGRect(x: view.center.x-60,
+                                                    y: 8,
+                                                    width: 120,
+                                                    height: 40))
+                button.setImage(UIImage(systemName: "chevron.compact.down",
+                                        withConfiguration: UIImage.SymbolConfiguration(pointSize: 52,
+                                                                                       weight: .medium)),
+                                for: .normal)
+                button.tintColor = .secondaryLabel
+                button.addTarget(self, action: #selector(didTapClose), for: .touchUpInside)
+                view.addSubview(button)
+            }
+        }
+    }
+    
     private var playlists: [Playlist] = []
     private let noPlaylistsView = ActionLabelView()
     
@@ -62,7 +81,14 @@ class LibraryPlaylistsViewController: UIViewController {
         super.viewDidLayoutSubviews()
         noPlaylistsView.frame = CGRect(x: 0, y: 0, width: 250, height: 250)
         noPlaylistsView.center = view.center
-        tableView.frame = view.bounds
+        if selectionHandler != nil {
+            tableView.frame = CGRect(x: view.left,
+                                     y: 48,
+                                     width: view.width,
+                                     height: view.height-48)
+        } else {
+            tableView.frame = view.bounds
+        }
     }
     
     public func showCreatePlaylistAlert() {
@@ -89,6 +115,11 @@ class LibraryPlaylistsViewController: UIViewController {
         present(alert, animated: true, completion: nil)
     }
     
+    @objc
+    private func didTapClose() {
+        dismiss(animated: true, completion: nil)
+    }
+    
 }
 
 extension LibraryPlaylistsViewController: ActionLabelViewDelegate {
@@ -104,7 +135,13 @@ extension LibraryPlaylistsViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        guard selectionHandler == nil else {
+            selectionHandler?(playlists[indexPath.row])
+            dismiss(animated: true, completion: nil)
+            return
+        }
         let vc = PlaylistViewController(with: playlists[indexPath.row])
+        vc.navigationItem.largeTitleDisplayMode = .always
         navigationController?.pushViewController(vc, animated: true)
     }
     

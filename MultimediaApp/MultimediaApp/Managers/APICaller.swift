@@ -297,11 +297,65 @@ final class APICaller {
     }
     
     public func addTrackToPlaylist(track: AudioTrack, playlist: Playlist, completion: @escaping (Result<Bool, Error>) -> Void) {
-        
+        createRequest(with: URL(string: Constants.baseAPIURL + "/playlists/\(playlist.id)/tracks"),
+                      type: .POST) { baseRequest in
+            var request = baseRequest
+            let jsonBody = [
+                "uris": [
+                    "spotify:track:\(track.id)"
+                ]
+            ]
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.httpBody = try? JSONSerialization.data(withJSONObject: jsonBody, options: .fragmentsAllowed)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                guard let data = data, error == nil else {
+                    completion(.failure(APIError.failedToGetDate))
+                    return
+                }
+                do {
+                    let result = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
+                    // Just to check myself
+                    if let json = result as? [String: Any], let status = json["snapshot_id"] as? Int {
+                        Logger.log(object: Self.self, method: #function, message: "Track has been added successfully :)", body: status, clarification: nil)
+                        completion(.success(true))
+                    } else {
+                        Logger.log(object: Self.self, method: #function, message: "We've got ERROR with API call :(", body: result, clarification: nil)
+                        completion(.success(false))
+                    }
+                } catch {
+                    Logger.log(object: Self.self, method: #function, message: "ERROR:", body: error, clarification: nil)
+                    completion(.failure(error))
+                }
+            }
+            task.resume()
+        }
     }
     
     public func removeTrackFromPlaylist(track: AudioTrack, playlist: Playlist, completion: @escaping (Result<Bool, Error>) -> Void) {
-        
+        createRequest(with: URL(string: Constants.baseAPIURL + "/playlists/\(playlist.id)/tracks"),
+                      type: .DELETE) { baseRequest in
+            var request = baseRequest
+            let jsonBody = [
+                "uris": "spotify:track:\(track.id)"
+            ]
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.httpBody = try? JSONSerialization.data(withJSONObject: jsonBody, options: .fragmentsAllowed)
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                guard let data = data, error == nil else {
+                    completion(.failure(APIError.failedToGetDate))
+                    return
+                }
+                do {
+                    let result = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
+                    Logger.log(object: Self.self, method: #function, message: "Wether we created new playlist successfully :)", body: result, clarification: nil)
+                    completion(.success(true))
+                } catch {
+                    Logger.log(object: Self.self, method: #function, message: "ERROR:", body: error, clarification: nil)
+                    completion(.failure(error))
+                }
+            }
+            task.resume()
+        }
     }
     
     // MARK: - Search API
