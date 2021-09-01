@@ -75,32 +75,11 @@ class HomeViewController: UIViewController {
         vc.navigationItem.largeTitleDisplayMode = .always
         navigationController?.pushViewController(vc, animated: true)
     }
-
+    
     private func updateUI<T: Codable>(with: T) {
         Logger.log(object: Self.self, method: #function)
+        // May be useful to update UI with appropriate models
         DispatchQueue.main.async {
-            let imageView = UIImageView(frame: CGRect(x: 16,
-                                                      y: (self.view.window?.windowScene?.statusBarManager?.statusBarFrame.height ?? 0)+4,
-                                                      width: 32,
-                                                      height: 32))
-            if let _ = with as? NewReleasesRespone {
-                imageView.image = UIImage(systemName: "square.grid.3x3.topleft.fill")
-            } else if let _ = with as? FeaturedPlaylistsResponse {
-                imageView.image = UIImage(systemName: "square.grid.3x3.topmiddle.fill")
-            } else if let _ = with as? RecommendedGenresResponse {
-                imageView.image = UIImage(systemName: "square.grid.3x3.topright.fill")
-            } else if let _ = with as? RecommendationsResponse {
-                imageView.image = UIImage(systemName: "square.grid.3x3.middleleft.fill")
-            } else if let _ = with as? AudioTrack {
-                imageView.image = UIImage(systemName: "square.grid.3x3.middle.fill")
-            } else if let _ = with as? AudioTracks {
-                imageView.image = UIImage(systemName: "square.grid.3x3.middleright.fill")
-            } else {
-                return
-            }
-            imageView.tintColor = .systemGreen
-            imageView.contentMode = .scaleAspectFill
-            self.view.addSubview(imageView)
             self.activityIndicator.stopAnimating()
         }
     }
