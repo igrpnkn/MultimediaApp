@@ -336,7 +336,11 @@ final class APICaller {
                       type: .DELETE) { baseRequest in
             var request = baseRequest
             let jsonBody = [
-                "uris": "spotify:track:\(track.id)"
+                "tracks": [
+                    [
+                        "uri": "spotify:track:\(track.id)"
+                    ]
+                ]
             ]
             request.setValue("application/json", forHTTPHeaderField: "Content-Type")
             request.httpBody = try? JSONSerialization.data(withJSONObject: jsonBody, options: .fragmentsAllowed)
@@ -347,10 +351,10 @@ final class APICaller {
                 }
                 do {
                     let result = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
-                    Logger.log(object: Self.self, method: #function, message: "Wether we created new playlist successfully :)", body: result, clarification: nil)
+                    Logger.log(object: Self.self, method: #function, message: "Track has been removed successfully :)", body: result, clarification: nil)
                     completion(.success(true))
                 } catch {
-                    Logger.log(object: Self.self, method: #function, message: "ERROR:", body: error, clarification: nil)
+                    Logger.log(object: Self.self, method: #function, message: "ERROR while removing Track:", body: error, clarification: nil)
                     completion(.failure(error))
                 }
             }
