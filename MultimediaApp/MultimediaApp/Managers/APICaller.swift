@@ -71,6 +71,47 @@ final class APICaller {
         }
     }
     
+    public func getCurrentUserAlbums(completion: @escaping (Result<[Album], Error>) -> Void) {
+        createRequest(with: URL(string: Constants.baseAPIURL + "/me/albums?limit=50"),
+                      type: .GET) { request in
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                guard let data = data, error == nil else {
+                    Logger.log(object: Self.self, method: #function, message: "❌ Data task was failed :(", body: error, clarification: nil)
+                    completion(.failure(APIError.failedToGetDate))
+                    return
+                }
+                do {
+                    let result = try JSONDecoder().decode(LibraryAlbumsResponse.self, from: data)
+                    Logger.log(object: Self.self, method: #function, message: "Parsed albums:", body: result.items, clarification: nil)
+                    completion(.success(result.items))
+                } catch {
+                    Logger.log(object: Self.self, method: #function, message: "⛔️ ERROR:", body: error, clarification: nil)
+                    completion(.failure(error))
+                }
+            }
+            task.resume()
+        }
+    }
+    
+    public func saveAlbumForCurrentUser(album: Album, completion: @escaping (Bool) -> Void) {
+        createRequest(with: URL(string: Constants.baseAPIURL + "/me/albums?ids=\(album.id)"),
+                      type: .PUT) { baseRequest in
+            var request = baseRequest
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            let task = URLSession.shared.dataTask(with: request) { data, response, error in
+                guard let statusCode = (response as? HTTPURLResponse)?.statusCode,
+                      error == nil else {
+                    Logger.log(object: Self.self, method: #function, message: "❌ Data task was failed :(", body: error, clarification: nil)
+                    completion(false)
+                    return
+                }
+                print(statusCode)
+                completion(statusCode == 200)
+            }
+            task.resume()
+        }
+    }
+    
     // MARK: - Browse API
     
     public func getNewReleases(completion: @escaping (Result<NewReleasesRespone, Error>) -> Void) {
@@ -247,8 +288,6 @@ final class APICaller {
                     return
                 }
                 do {
-                    let json = try JSONSerialization.jsonObject(with: data, options: .allowFragments)
-                    print(json)
                     let result = try JSONDecoder().decode(LibraryPlaylistsResponse.self, from: data)
                     completion(.success(result.items))
                 } catch {

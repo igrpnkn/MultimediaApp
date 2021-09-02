@@ -107,7 +107,8 @@ class PlaylistViewController: UIViewController {
     
     @objc
     private func removeTrackFromPlaylist(_ gesture: UILongPressGestureRecognizer) {
-        guard gesture.state == .began else {
+        guard gesture.state == .began,
+              self.isOwner else {
             Logger.log(object: Self.self, method: #function, message: "⛔️ Long press has been guarded :(")
             return
         }

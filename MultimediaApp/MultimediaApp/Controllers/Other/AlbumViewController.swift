@@ -54,10 +54,16 @@ class AlbumViewController: UIViewController {
         title = ""//playlist.name
         view.backgroundColor = .systemBackground
         configureCollectionView()
-        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "square.and.arrow.up"),
-                                                            style: .plain,
-                                                            target: self,
-                                                            action: #selector(didTapShare))
+        navigationItem.rightBarButtonItems = [
+            UIBarButtonItem(image: UIImage(systemName: "arrowshape.turn.up.forward"),
+                                                                style: .plain,
+                                                                target: self,
+                                                                action: #selector(didTapShare)),
+            UIBarButtonItem(image: UIImage(systemName: "heart"),
+                            style: .plain,
+                            target: self,
+                            action: #selector(didTapFavorite))
+        ]
         fetchData ()
     }
     
@@ -96,7 +102,34 @@ class AlbumViewController: UIViewController {
         vc.popoverPresentationController?.barButtonItem = navigationItem.rightBarButtonItem
         present(vc, animated: true, completion: nil)
     }
-
+    
+    @objc
+    private func didTapFavorite() {
+        Logger.log(object: Self.self, method: #function)
+        APICaller.shared.saveAlbumForCurrentUser(album: album) { result in
+            DispatchQueue.main.async {
+                let actionLabel = ActionLabelView()
+                actionLabel.delegate = self
+                actionLabel.frame = CGRect(x: 0, y: 0, width: 250, height: 250)
+                actionLabel.center = self.view.center
+                actionLabel.layer.opacity = 0.1
+                self.view.addSubview(actionLabel)
+                actionLabel.isHidden = false
+                if result {
+                    actionLabel.configure(with:
+                        ActionLabelViewViewModel(text: "Album was added to Favorites!",
+                                                 actionTitle: "OK"))
+                } else {
+                    actionLabel.configure(with:
+                        ActionLabelViewViewModel(text: "Something gone wrong :(",
+                                                 actionTitle: "OK"))
+                }
+                UIView.animate(withDuration: 0.5) {
+                    actionLabel.layer.opacity = 1
+                }
+            }
+        }
+    }
 }
 
 // MARK: - Fetching Data from API
@@ -189,4 +222,18 @@ extension AlbumViewController: PlaylistHeaderCollectionReusableViewDelegate {
         PlaybackPresenter.shared.startPlayback(form: self, tracks: tracksWithAlbum)
     }
     
+}
+
+extension AlbumViewController: ActionLabelViewDelegate {
+    func actionLabelViewDidTapButton(_ actionLabelView: ActionLabelView) {
+        Logger.log(object: Self.self, method: #function)
+        UIView.animate(withDuration: 0.3,
+                       delay: 0,
+                       options: .curveEaseOut) {
+            actionLabelView.transform = CGAffineTransform(a: 0.1, b: 0, c: 0, d: 0.1, tx: 0, ty: 0)
+            actionLabelView.layer.opacity = 0.1
+        } completion: { _ in
+            actionLabelView.removeFromSuperview()
+        }
+    }
 }

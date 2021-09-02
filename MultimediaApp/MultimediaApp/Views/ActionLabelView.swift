@@ -29,7 +29,7 @@ class ActionLabelView: UIView {
     
     private let button: UIButton = {
         let button = UIButton()
-        button.setTitleColor(.link, for: .normal)
+        button.setTitleColor(.spotifyGreen, for: .normal)
         return button
     }()
     
