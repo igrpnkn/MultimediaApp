@@ -83,7 +83,7 @@ final class APICaller {
                 do {
                     let result = try JSONDecoder().decode(LibraryAlbumsResponse.self, from: data)
                     Logger.log(object: Self.self, method: #function, message: "Parsed albums:", body: result.items, clarification: nil)
-                    completion(.success(result.items))
+                    completion(.success(result.items.compactMap { $0.album }))
                 } catch {
                     Logger.log(object: Self.self, method: #function, message: "⛔️ ERROR:", body: error, clarification: nil)
                     completion(.failure(error))

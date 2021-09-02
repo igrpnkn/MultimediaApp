@@ -20,9 +20,10 @@ class ProfileViewController: UIViewController {
     }()
     
     private let tableView: UITableView = {
-        let tableView = UITableView(frame: .zero, style: .grouped)
+        let tableView = UITableView(frame: .zero, style: .insetGrouped)
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cell")
         tableView.isHidden = true
+        tableView.backgroundColor = .secondarySystemBackground
         return tableView
     }()
     

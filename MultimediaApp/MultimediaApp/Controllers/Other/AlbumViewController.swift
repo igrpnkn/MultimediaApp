@@ -106,7 +106,7 @@ class AlbumViewController: UIViewController {
     @objc
     private func didTapFavorite() {
         Logger.log(object: Self.self, method: #function)
-        APICaller.shared.saveAlbumForCurrentUser(album: album) { result in
+        APICaller.shared.saveAlbumForCurrentUser(album: album) { success in
             DispatchQueue.main.async {
                 let actionLabel = ActionLabelView()
                 actionLabel.delegate = self
@@ -115,10 +115,11 @@ class AlbumViewController: UIViewController {
                 actionLabel.layer.opacity = 0.1
                 self.view.addSubview(actionLabel)
                 actionLabel.isHidden = false
-                if result {
+                if success {
                     actionLabel.configure(with:
                         ActionLabelViewViewModel(text: "Album was added to Favorites!",
                                                  actionTitle: "OK"))
+                    NotificationCenter.default.post(name: .albumSavedNotification, object: nil)
                 } else {
                     actionLabel.configure(with:
                         ActionLabelViewViewModel(text: "Something gone wrong :(",

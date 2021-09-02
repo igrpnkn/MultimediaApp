@@ -18,7 +18,9 @@ class LibraryAlbumsViewController: UIViewController {
         tableView.register(SearchResultSubtitledTableViewCell.self,
                            forCellReuseIdentifier: SearchResultSubtitledTableViewCell.identifier)
         tableView.isHidden = true
-        tableView.backgroundColor = .blue
+        tableView.backgroundColor = .systemBackground
+        tableView.refreshControl = UIRefreshControl()
+        tableView.refreshControl?.addTarget(self, action: #selector(refreshControlDidSwipe), for: .valueChanged)
         return tableView
     }()
     
@@ -26,9 +28,17 @@ class LibraryAlbumsViewController: UIViewController {
         super.viewDidLoad()
         Logger.log(object: Self.self, method: #function)
         view.backgroundColor = .systemBackground
+        addObservers()
         setupTableView()
         setupNoAlbumsView()
         fetchData()
+    }
+    
+    private func addObservers() {
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(refreshControlDidSwipe),
+                                               name: .albumSavedNotification,
+                                               object: nil)
     }
     
     private func setupTableView() {
@@ -39,7 +49,7 @@ class LibraryAlbumsViewController: UIViewController {
     }
     
     private func updateUI() {
-        Logger.log(object: Self.self, method: #function, message: "⚠️ ⚠️ ⚠️", body: albums, clarification: nil)
+        Logger.log(object: Self.self, method: #function)
         DispatchQueue.main.async {
             if self.albums.isEmpty {
                 self.tableView.isHidden = true
@@ -66,31 +76,7 @@ class LibraryAlbumsViewController: UIViewController {
         noAlbumsView.center = CGPoint(x: view.width/2, y: view.height/2)
         tableView.frame = self.view.bounds
     }
-    /*
-    public func showCreatePlaylistAlert() {
-        Logger.log(object: Self.self, method: #function)
-        let alert = UIAlertController(title: "New Playlist",
-                                      message: "Enter playlist name.",
-                                      preferredStyle: .alert)
-        alert.addTextField { textField in
-            textField.placeholder = "Playlist..."
-        }
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-        alert.addAction(UIAlertAction(title: "Create", style: .default, handler: { [weak self] _ in
-            guard let textField = alert.textFields?.first,
-                  let text = textField.text,
-                  !text.trimmingCharacters(in: .whitespaces).isEmpty else {
-                return
-            }
-            APICaller.shared.createPlaylist(with: text) { isSuccess in
-                isSuccess ? self?.fetchData() : Logger.log(object: Self.self,
-                                                           method: #function,
-                                                           message: "Failed to create Playlist :(")
-            }
-        }))
-        present(alert, animated: true, completion: nil)
-    }
-    */
+  
     @objc
     private func didTapClose() {
         dismiss(animated: true, completion: nil)
@@ -146,6 +132,7 @@ extension LibraryAlbumsViewController: UITableViewDataSource {
     }
 }
 
+
 // MARK: - Fetching Data
 
 extension LibraryAlbumsViewController {
@@ -164,7 +151,13 @@ extension LibraryAlbumsViewController {
                 }
             }
         }
-        
+    }
+    
+    @objc
+    private func refreshControlDidSwipe() {
+        Logger.log(object: Self.self, method: #function)
+        self.fetchData()
+        tableView.refreshControl?.endRefreshing()
     }
     
 }

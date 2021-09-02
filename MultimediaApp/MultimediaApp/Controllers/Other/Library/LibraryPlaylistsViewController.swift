@@ -37,6 +37,10 @@ class LibraryPlaylistsViewController: UIViewController {
                            forCellReuseIdentifier: SearchResultSubtitledTableViewCell.identifier)
         tableView.isHidden = true
         tableView.backgroundColor = .systemBackground
+        tableView.refreshControl = UIRefreshControl()
+        tableView.refreshControl?.addTarget(self,
+                                            action: #selector(refreshControlDidSwipe),
+                                            for: .valueChanged)
         return tableView
     }()
     
@@ -44,9 +48,17 @@ class LibraryPlaylistsViewController: UIViewController {
         super.viewDidLoad()
         Logger.log(object: Self.self, method: #function)
         view.backgroundColor = .systemBackground
+        addObservers()
         setupTableView()
         setupNoPlaylistsView()
         fetchData()
+    }
+    
+    private func addObservers() {
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(refreshControlDidSwipe),
+                                               name: .playlistSavedNotification,
+                                               object: nil)
     }
     
     private func setupTableView() {
@@ -194,4 +206,10 @@ extension LibraryPlaylistsViewController {
         }
     }
     
+    @objc
+    private func refreshControlDidSwipe() {
+        Logger.log(object: Self.self, method: #function)
+        fetchData()
+        tableView.refreshControl?.endRefreshing()
+    }
 }
