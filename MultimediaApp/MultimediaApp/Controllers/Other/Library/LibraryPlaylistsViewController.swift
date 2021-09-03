@@ -119,9 +119,14 @@ class LibraryPlaylistsViewController: UIViewController {
                 return
             }
             APICaller.shared.createPlaylist(with: text) { isSuccess in
-                isSuccess ? self?.fetchData() : Logger.log(object: Self.self,
-                                                           method: #function,
-                                                           message: "Failed to create Playlist :(")
+                isSuccess ?
+                    HapticsManager.shared.vibrate(for: .success) :
+                    HapticsManager.shared.vibrate(for: .error)
+                isSuccess ?
+                    self?.fetchData() :
+                    Logger.log(object: Self.self,
+                               method: #function,
+                               message: "Failed to create Playlist :(")
             }
         }))
         present(alert, animated: true, completion: nil)
@@ -147,6 +152,7 @@ extension LibraryPlaylistsViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        HapticsManager.shared.vibrateForSelection()
         guard selectionHandler == nil else {
             selectionHandler?(playlists[indexPath.row])
             dismiss(animated: true, completion: nil)

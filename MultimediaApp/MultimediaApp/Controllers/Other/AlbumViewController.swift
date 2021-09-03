@@ -120,10 +120,12 @@ class AlbumViewController: UIViewController {
                         ActionLabelViewViewModel(text: "Album was added to Favorites!",
                                                  actionTitle: "OK"))
                     NotificationCenter.default.post(name: .albumSavedNotification, object: nil)
+                    HapticsManager.shared.vibrate(for: .success)
                 } else {
                     actionLabel.configure(with:
                         ActionLabelViewViewModel(text: "Something gone wrong :(",
                                                  actionTitle: "OK"))
+                    HapticsManager.shared.vibrate(for: .error)
                 }
                 UIView.animate(withDuration: 0.5) {
                     actionLabel.layer.opacity = 1
