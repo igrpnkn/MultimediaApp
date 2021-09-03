@@ -204,4 +204,15 @@ final class AuthManager {
         Logger.log(object: Self.self, method: #function, message: "Tokens are cashed.")
     }
     
+    public func signOut(completion: (Bool) -> Void) {
+        UserDefaults.standard.setValue(nil, forKey: "access_token")
+        UserDefaults.standard.setValue(nil, forKey: "refresh_token")
+        UserDefaults.standard.setValue(nil, forKey: "expirationDate")
+        if (tokenExpirationDate != nil),
+           (accessToken != nil),
+           (refreshToken != nil) {
+            completion(false)
+        }
+        completion(true)
+    }
 }

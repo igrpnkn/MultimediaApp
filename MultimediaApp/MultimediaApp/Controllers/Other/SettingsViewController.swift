@@ -65,7 +65,28 @@ class SettingsViewController: UIViewController {
     
     private func signOutDidTap() {
         Logger.log(object: Self.self, method: #function)
-        tableView.reloadData()
+        let alert = UIAlertController(title: "Are you sure?", message: "Next time you should login your account again", preferredStyle: .actionSheet)
+        alert.addAction(UIAlertAction(title: "Sign Out", style: .destructive, handler: { [weak self] _ in
+            self?.signUserOut()
+        }))
+        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        present(alert, animated: true, completion: nil)
+    }
+    
+    private func signUserOut() {
+        AuthManager.shared.signOut { [weak self] signedOut in
+            if signedOut {
+                DispatchQueue.main.async {
+                    let navVC = UINavigationController(rootViewController: WelcomeViewController())
+                    navVC.navigationBar.prefersLargeTitles = true
+                    navVC.viewControllers.first?.navigationItem.largeTitleDisplayMode = .always
+                    navVC.modalPresentationStyle = .fullScreen
+                    self?.present(navVC, animated: true, completion: {
+                        self?.navigationController?.popToRootViewController(animated: true)
+                    })
+                }
+            }
+        }
     }
 }
 
