@@ -396,7 +396,7 @@ extension HomeViewController {
                 newReleases = model
                 break
             case .failure(let error):
-                Logger.log(object: Self.self, method: #function, message: "ERROR", body: error.localizedDescription, clarification: nil)
+                Logger.log(object: Self.self, method: #function, message: "⛔️ ERROR - New Releases:", body: error.localizedDescription, clarification: nil)
                 break
             }
         }
@@ -410,7 +410,7 @@ extension HomeViewController {
                 featuredPlaylists = model
                 break
             case .failure(let error):
-                Logger.log(object: Self.self, method: #function, message: "ERROR", body: error.localizedDescription, clarification: nil)
+                Logger.log(object: Self.self, method: #function, message: "⛔️ ERROR - Features Playlists:", body: error.localizedDescription, clarification: nil)
                 break
             }
         }
@@ -434,13 +434,13 @@ extension HomeViewController {
                         recommendations = model
                         break
                     case .failure(let error):
-                        Logger.log(object: Self.self, method: #function, message: "ERROR", body: error.localizedDescription, clarification: nil)
+                        Logger.log(object: Self.self, method: #function, message: "⛔️ ERROR - Recommended Genres:", body: error.localizedDescription, clarification: nil)
                         break
                     }
                 }
                 break
             case .failure(let error):
-                Logger.log(object: Self.self, method: #function, message: "ERROR", body: error.localizedDescription, clarification: nil)
+                Logger.log(object: Self.self, method: #function, message: "⛔️ ERROR - Recommendations:", body: error.localizedDescription, clarification: nil)
                 break
             }
         }
